@@ -14,7 +14,7 @@ classes = db["classes"]
 
 def find_validate_xml (base, search) : 
     try :
-        return base.find(search).text
+        return base.find(search).text.strip()
     except :
         return None
     
@@ -97,7 +97,7 @@ def update_sections (clas):
                 'type_code' : type_code,
                 'start_time' : start_time,
                 'end_time' : end_time,
-                'days' : find_validate_xml(meeting, "days"),
+                'days' : find_validate_xml(meeting, "daysOfTheWeek"),
                 'room_number' : find_validate_xml(meeting, "roomNumber"),
                 'building_name' : find_validate_xml(meeting, "buildingName"),
 
@@ -133,3 +133,7 @@ def get_sections (code, number) :
         return update_sections(selected_class)
     print("Using cached sections")
     return json.dumps(selected_class['sections'], default=str)
+
+get_sections('ECE', '120')
+get_sections('ECE', '110')
+get_sections("PHYS", "211")
