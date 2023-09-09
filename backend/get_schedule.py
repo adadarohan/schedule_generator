@@ -1,7 +1,7 @@
 import pymongo
 from dotenv import load_dotenv
-import os
-import itertools
+import os 
+import itertools 
 import haversine as hs
 
 load_dotenv()
