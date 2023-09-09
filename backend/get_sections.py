@@ -11,6 +11,7 @@ mongodb_uri = os.getenv("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
 db = client["schedule"]
 classes = db["classes"]
+locations = db["locations"]
 
 def find_validate_xml (base, search) : 
     try :
@@ -90,6 +91,13 @@ def update_sections (clas):
                 type_code = meeting.find("type").attrib["code"]
             except :
                 type_code = None
+            
+            try :
+                building_name = find_validate_xml(meeting, "buildingName")
+                coordinates = locations.find_one({"name": building_name}).get("coordinates", None)
+            except Exception as e :
+                print(f"Error finding coordinates for {building_name} with error {e} ")
+                coordinates = None
 
             meetings.append({
                 'id': meeting.attrib["id"],
@@ -100,7 +108,7 @@ def update_sections (clas):
                 'days' : find_validate_xml(meeting, "daysOfTheWeek"),
                 'room_number' : find_validate_xml(meeting, "roomNumber"),
                 'building_name' : find_validate_xml(meeting, "buildingName"),
-
+                'coordinates' : coordinates,
             })
 
         sections.append({
