@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET  # for parsing XML
 import json
 
 load_dotenv()
-mongodb_uri = os.getenv("MONGODB_URI")
+mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
 db = client["schedule"]
 classes = db["classes"]
@@ -142,6 +142,5 @@ def get_sections (code, number) :
     print("Using cached sections")
     return json.dumps(selected_class['sections'], default=str)
 
-get_sections('ECE', '120')
-get_sections('ECE', '110')
-get_sections("PHYS", "211")
+def lambda_handler(event, context):
+    return get_sections(event['code'], event['number'])

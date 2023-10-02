@@ -3,10 +3,11 @@ from dotenv import load_dotenv
 import os 
 import itertools 
 import haversine as hs
+import json
 
 load_dotenv()
 
-mongodb_uri = os.getenv("MONGODB_URI")
+mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
 db = client["schedule"]
 classes = db["classes"]
@@ -250,5 +251,5 @@ def get_schedule (user_preferences) :
     sorted_schedules = sort_schedules(possible_schedules, user_preferences)
     return sorted_schedules[:5]
 
-if __name__ == "__main__" :
-    print(get_schedule(user_preferences))
+def lambda_handler(event, context):
+    return json.dumps(get_schedule(event), default=str)
