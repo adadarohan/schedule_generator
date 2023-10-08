@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-image:    
+    radial-gradient(
+      closest-side at left 22% bottom 30%,
+      #f5737b,
+      transparent 220%
+    ),
+    radial-gradient(
+      ellipse at right 40% top 10%,
+      #9593f5,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at right 20% bottom 5%,
+      #7b9efa,
+      transparent 40%
+    ),
+    radial-gradient(
+      closest-corner at right 15% top 10%,
+      #eaa0ff,
+      transparent 400%
+    );
+  height: 100vh;
+  background-repeat: no-repeat;
+}
