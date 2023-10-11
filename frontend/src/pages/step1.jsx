@@ -1,14 +1,19 @@
-import {Link } from "react-router-dom";
-import { useState } from "react";
+import {Link, useLoaderData } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Searchbox from "./components/searchbox";
 import ClassPill from "./components/class_pill";
 
-function Step1() {
+function Step1(props) {
+    let classList = useLoaderData()
 
     const [chosen_classes, setChosenClasses] = useState([])
     const [showPlus, setShowPlus] = useState(false)
 
     const handleHidePlus = () => setShowPlus(false)
+
+    useEffect(() => {
+      props.setUserPrefs({'classes_1' : chosen_classes})
+    }, [chosen_classes])
 
     return (
       <div className="font-serif">
@@ -24,20 +29,25 @@ function Step1() {
 
           {showPlus ? 
 
-            <div className="flex flex-row rounded-full bg-transparent border-black border-2 py-3 mr-3 px-3 self-start mb-5 cursor-pointer aspect-square">
-              <span className="material-symbols-outlined text-4xl leading-9" onClick={handleHidePlus}>add</span>
+            <div className="flex flex-row rounded-full bg-transparent border-black border-2 py-3 mr-3 px-3 self-start mb-5 cursor-pointer aspect-square" onClick={handleHidePlus}>
+              <span className="material-symbols-outlined text-4xl leading-9" >add</span>
             </div>
 
             :
 
-            <Searchbox chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} showPlus={showPlus} setShowPlus={setShowPlus} />
+            <Searchbox chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} showPlus={showPlus} setShowPlus={setShowPlus} classList={classList}/>
           }
         </div>
   
-        <Link to={`form/1`} className="fixed bottom-0 right-0 pb-10 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max">
+        { (chosen_classes.length == 0 ? 
+        ""
+        :
+        <Link to="/form/2" className="fixed bottom-0 right-0 pb-10 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max">
           <h5 className="text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
         </Link>
+        )}
+        
       </div>
     )
   }

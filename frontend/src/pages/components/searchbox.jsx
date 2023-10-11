@@ -7,71 +7,67 @@ function ItemChosen( item , props) {
     props.setShowPlus(true)
 }
 
-
-const class_list = fetch("https://mkgfanuvq2vklflixl2nxqxlyy0mjpfv.lambda-url.us-east-2.on.aws/").json()
-console.log(class_list)
-
 function ComboBoxExample(props) {
-    function getClassFilter(inputValue) {
-      const lowerCasedInputValue = inputValue.toLowerCase()
-  
-      return function booksFilter(class_) {
-        return (
-          !inputValue ||
-          class_.toLowerCase().includes(lowerCasedInputValue)
-        )
-      }
-    }
-  
-    function ComboBox() {
-      const [items, setItems] = useState(class_list)
-      const {
-        isOpen,
-        getMenuProps,
-        getInputProps,
-        getItemProps,
-      } = useCombobox({
-        onInputValueChange({inputValue}) {
-          setItems(class_list.filter(getClassFilter(inputValue)))
-        },
-        items,
-        itemToString(item) {
-          return item
-        },
-      })
-  
-      return (
-        <div className="flex flex-col">
-          <div className={"flex flex-row rounded-full bg-transparent border-black border-2 py-3 px-3 transition-[border-radius] duration-75 " + (isOpen ? "rounded-br-none" : "")}>
-            <span className="material-symbols-outlined text-4xl pr-3">search</span>
-            <input
-            className="text-3xl bg-transparent outline-none placeholder:text-slate-600 w-36"
-            type="text"
-            placeholder="search"
-            {...getInputProps()}
-            />
-          </div>
 
-          <ul
-            className={"border-black border-2 rounded-b-3xl border-t-0 pr-8 pb-2 pl-1 max-w-max self-end " + (!(isOpen && items.length) ? "hidden" : "")
-}
-            {...getMenuProps()}
-          >
-            {isOpen &&
-              items.slice(0,5).map((item, index) => (
-                <li
-                  className="text-3xl w-36 py-3 px-2 max-w-max cursor-pointer hover:scale-105 transition duration-150"
-                  key={item}
-                  {...getItemProps({ item, index })}
-                  onClick={() => ItemChosen(item, props)}
-                >
-                  <span>{item}</span>
-                </li>
-              ))}
-          </ul>
-        </div>
-      );
+  function getClassFilter(inputValue) {
+    const lowerCasedInputValue = inputValue.toLowerCase()
+
+    return function booksFilter(class_) {
+      return (
+        !inputValue ||
+        class_.toLowerCase().includes(lowerCasedInputValue)
+      )
     }
+  }
+
+  function ComboBox() {
+    const [items, setItems] = useState(props.classList)
+    const {
+      isOpen,
+      getMenuProps,
+      getInputProps,
+      getItemProps,
+    } = useCombobox({
+      onInputValueChange({inputValue}) {
+        setItems(props.classList.filter(getClassFilter(inputValue)))
+      },
+      items,
+      itemToString(item) {
+        return item
+      },
+    })
+
+    return (
+      <div className="flex flex-col">
+        <div className={"flex flex-row rounded-full bg-transparent border-black border-2 py-3 px-3 transition-[border-radius] duration-75 " + (isOpen ? "rounded-br-none" : "")}>
+          <span className="material-symbols-outlined text-4xl pr-3">search</span>
+          <input
+          className="text-3xl bg-transparent outline-none placeholder:text-slate-600 w-36"
+          type="text"
+          placeholder="search"
+          {...getInputProps()}
+          />
+        </div>
+
+        <ul
+          className={"border-black border-2 rounded-b-3xl border-t-0 pr-8 pb-2 pl-1 max-w-max self-end " + (!(isOpen && items.length) ? "hidden" : "")}
+          {...getMenuProps()}
+        >
+          {isOpen &&
+            items.slice(0,5).map((item, index) => (
+              <li
+                className="text-3xl w-38 py-3 px-2 max-w-max cursor-pointer hover:scale-105 transition duration-150"
+                key={item}
+                {...getItemProps({ item, index })}
+                onClick={() => ItemChosen(item, props)}
+              >
+                <span>{item}</span>
+              </li>
+            ))}
+        </ul>
+      </div>
+    );
+  }
     return <ComboBox />
   }
 
