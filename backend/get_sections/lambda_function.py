@@ -129,7 +129,7 @@ def update_sections (clas):
     return json.dumps(sections, default=str)
 
 def get_sections (code, number) :
-    selected_class = classes.find_one({'code': code, 'number': number})
+    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2023, 'semester': 'fall'})
     if selected_class is None :
         print("Class not found")
         return None
