@@ -10,6 +10,7 @@ import Step1 from "./pages/step1";
 import Step2 from "./pages/step2"
 import Step3 from "./pages/step3";
 import Step4 from "./pages/step4";
+import Step5 from "./pages/step5";
 
 /*
 {
@@ -62,6 +63,10 @@ export default function App () {
         {
             path: "/form/4",
             element: <Step4 userPrefs={userPrefs} setUserPrefs={setUserPrefs}/>
+        },
+        {
+            path: "/form/5",
+            element: <Step5 userPrefs={userPrefs} setUserPrefs={setUserPrefs}/>
         }
       ]);
 
