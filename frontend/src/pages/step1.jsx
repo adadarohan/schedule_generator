@@ -12,7 +12,10 @@ function Step1(props) {
     const handleHidePlus = () => setShowPlus(false)
 
     useEffect(() => {
-      props.setUserPrefs({'classes_1' : chosen_classes})
+      props.setUserPrefs({
+        ...props.userPrefs,
+        classes_1: chosen_classes
+      })
     }, [chosen_classes])
 
     return (
@@ -42,7 +45,7 @@ function Step1(props) {
         { (chosen_classes.length == 0 ? 
         ""
         :
-        <Link to="/form/2" className="fixed bottom-0 right-0 pb-10 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max">
+        <Link to="/form/2" className="fixed bottom-0 right-0 pb-10 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
           <h5 className="text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
         </Link>
