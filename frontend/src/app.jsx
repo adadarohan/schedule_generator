@@ -35,7 +35,11 @@ export default function App () {
         },
         {
             path: "/form/3",
-            element: <Step3 userPrefs={userPrefs} setUserPrefs={setUserPrefs}/>
+            element: <Step3 userPrefs={userPrefs} setUserPrefs={setUserPrefs}/>,
+            loader : async () => {
+              const response = await fetch("https://mkgfanuvq2vklflixl2nxqxlyy0mjpfv.lambda-url.us-east-2.on.aws/")
+              return await response.json()
+            }
         }
       ]);
 

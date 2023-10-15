@@ -36,11 +36,10 @@ def update_sections (clas):
     for section in clas_root.find("sections").findall("section") :
         resp = requests.get(section.attrib["href"])
         if resp.status_code == 404 :
-            print("Error Link not found: " + section["name"])
+            print("Error Link not found: " + section.attrib["href"])
             continue
         if resp.status_code != 200 :
-            print("Error: " + section["name"])
-            print(section["api_link"])
+            print("Error: " + section.attrib["href"])
             continue
             
         try :
@@ -129,7 +128,9 @@ def update_sections (clas):
     return json.dumps(sections, default=str)
 
 def get_sections (code, number) :
+    print(f"Getting sections for {code} {number}")
     selected_class = classes.find_one({'code': code, 'number': number, 'year': 2023, 'semester': 'fall'})
+    print(selected_class)
     if selected_class is None :
         print("Class not found")
         return None
@@ -143,4 +144,4 @@ def get_sections (code, number) :
     return json.dumps(selected_class['sections'], default=str)
 
 def lambda_handler(event, context):
-    return get_sections(event['code'], event['number'])
+    return get_sections(event['queryStringParameters']['code'], event['queryStringParameters']['number'])
