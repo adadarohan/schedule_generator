@@ -36,7 +36,7 @@ function Step5(props) {
       return
     }
 
-    if ( startTime + lunchDuration >= endTime) {
+    if ( startTime + parseInt(lunchDuration) > endTime) {
       alert("Lunch duration is too long")
       return
     }

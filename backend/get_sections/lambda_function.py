@@ -129,7 +129,7 @@ def update_sections (clas):
 
 def get_sections (code, number) :
     print(f"Getting sections for {code} {number}")
-    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2023, 'semester': 'fall'})
+    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'spring'})
     print(selected_class)
     if selected_class is None :
         print("Class not found")

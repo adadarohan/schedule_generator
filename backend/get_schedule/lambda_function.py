@@ -252,4 +252,7 @@ def get_schedule (user_preferences) :
     return sorted_schedules[:5]
 
 def lambda_handler(event, context):
-    return json.dumps(get_schedule(event), default=str)
+    print(event["queryStringParameters"])
+
+    user_prefs = event["queryStringParameters"]
+    return json.dumps(get_schedule(user_prefs), default=str)
