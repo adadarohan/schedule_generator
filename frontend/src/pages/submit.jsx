@@ -5,8 +5,6 @@ export default function Submit(props) {
   
   const navigate = useNavigate()
 
-  const encodeGetParams = p => Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-
   useEffect(() => {
 
     // Data Validation
@@ -60,10 +58,30 @@ export default function Submit(props) {
       return
     }
 
-    fetch("https://ufm2ujglzj6q55eplsst6nhxbu0erlzn.lambda-url.us-east-2.on.aws/" + encodeGetParams(props.userPrefs))
-    .then(response => response.json())
+    let json_string = JSON.stringify(props.userPrefs)
+
+    fetch("https://ufm2ujglzj6q55eplsst6nhxbu0erlzn.lambda-url.us-east-2.on.aws/?data=" + encodeURIComponent(json_string) )
+    .then(response => {
+      if (!response.ok) {
+        console.log("Unknown error from server")
+        navigate("/error?error=Unknown%20Error")
+      }
+      try {
+        return response.json()
+      } catch {
+        console.log("Unknown error from server")
+        navigate("/error?error=Unknown%20Error")
+      }
+    })
     .then(data => {
-      console.log(data)
+      if (data.length == 0) {
+        console.log("No results")
+        navigate("/error?error=No%20Results")
+        return
+      }
+
+      props.setSchedules(data)
+      navigate("/results")
     })
   }, [])
 

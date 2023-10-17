@@ -21,33 +21,20 @@ weights = {
     "lunch" : 7.5
 }
 
-user_preferences = {
-    'classes' : [{'code': 'ECE', 'number': '110', 'crn_list': ['36785', '36788', '36780', '36801', '36794', '55569', '36798', '55155', '36781', '55156', '36778', '36800', '36792', '36783', '36796', '62483', '55568', '36790', '36789', '62844', '59864', '59865', '59866', '59867', '59868', '59869', '59870', '59871', '59872', '59873', '59875', '59876', '59878', '59879', '59880', '62509']}, {'code': 'ECE', 'number': '120', 'crn_list': ['64596', '64597', '64598', '64599', '65253', '65254', '65255', '65256', '65257', '65258', '65260', '65261', '66763', '64595', '65733', '65734', '75613']}, {'code': 'PHYS', 'number': '211', 'crn_list': ['55650', '34564', '34566', '59136', '59140', '34590', '34569', '34598', '54863', '34592', '34624', '47717', '34595', '60539', '34601', '54864', '60540', '34608', '34611', '60541', '47577', '34630', '34709', '34604', '34613', '34616', '34619', '34586', '34621', '59137', '55008', '34625', '34727', '52599', '56971', '60543', '60544', '55801', '60546', '60545', '56990', '55007', '55802', '34657', '52600', '52601', '47578', '59143', '34706', '56981', '34659', '34661', '55800', '34665', '34667', '34670', '34673', '59144', '34693', '34689', '34700', '34703', '34698', '55006', '55118', '60535', '60536']}],
-    'start_time' : 8,
-    'end_time': 17,
-    'open_sections_only' : False,
-    'max_distance' : 500,
-    'back_to_back' : True,
-    'pref_time' : 12,
-    'pref_sections': ['36785', '36788', '36780', '36801'],
-    'lunch':  {
-        "start" : 11,
-        "end" : 14,
-        "duration" : 1
-    }
-}
+class ScheduleException(Exception):
+    pass
 
 def check_for_no_section (classes_to_take) :
     for clas in classes_to_take :
         if len(clas["sections"]) == 0 :
-            raise Exception("No sections found for " + clas["code"] + " " + clas["number"])
+            raise ScheduleException("No sections found for " + clas["code"] + " " + clas["number"])
         
 def fetch_section_data (class_list) :
     """
     Fetches the section data from the database
     """
     for class_ in class_list : 
-        clas_mongo_object = classes.find_one({"code" : class_["code"], "number" : class_["number"]})
+        clas_mongo_object = classes.find_one({"code" : class_["code"], "number" : class_["number"], "year" : 2024, "semester" : "spring"})
         class_["sections"] = []
         for section in clas_mongo_object["sections"] :
             if section["crn"] in class_["crn_list"] :
@@ -97,12 +84,16 @@ def generate_schedule_combinations (class_list) :
     """
     groups = {}
 
+    # Split classes into groups based on meeting types
     for clas in class_list :
         base_group_name = f"{clas['code']}_{clas['number']}_"
         for section in clas['sections'] :
             list_of_meeting_types = [meeting['type_code'] for meeting in section['meetings']]
             group_key = base_group_name + "_".join([str(x) for x in list_of_meeting_types])
             groups[group_key] = groups.get(group_key, []) + [section]
+
+    # Remove sections in groups that have the same time and days
+    # TODO
 
     possible_schedules = list(itertools.product(*groups.values()))
 
@@ -219,26 +210,28 @@ def lunch_score (list_of_sections, lunch) :
 def compute_schedule_score (list_of_sections, user_preferences) -> float :
     schedule = convert_to_time_based(list_of_sections)
     if schedule is None :
-        return None
+        return None, None
     ds = distance_score(schedule, user_preferences["max_distance"])
     btb = back_to_back_score(schedule, user_preferences["back_to_back"])
     ts = time_score(schedule, user_preferences["pref_time"])
     ss = section_score(schedule, user_preferences["pref_sections"])
     ls = lunch_score(schedule, user_preferences["lunch"])
-    return ds + btb + ts + ss + ls
+    return (ds + btb + ts + ss + ls), schedule
 
 def sort_schedules (possible_schedules, user_preferences) :
     sorted_schedules = []
     for schedule in possible_schedules :
-        score = compute_schedule_score(schedule, user_preferences)
+        score, time_schedule = compute_schedule_score(schedule, user_preferences)
         if score is not None :
             sorted_schedules.append(
                 {
+                    "time_schedule" : time_schedule,
                     "schedule" : schedule,
                     "score" : score
                 }
             )
-
+    if len(sorted_schedules) == 0 :
+        raise ScheduleException("No possible schedules found. Please try again with different preferences.")
     sorted_schedules.sort(key=lambda x: x["score"], reverse=True)
     return sorted_schedules
 
@@ -252,7 +245,21 @@ def get_schedule (user_preferences) :
     return sorted_schedules[:5]
 
 def lambda_handler(event, context):
-    print(event["queryStringParameters"])
+    print(event["queryStringParameters"]['data'])
 
-    user_prefs = event["queryStringParameters"]
-    return json.dumps(get_schedule(user_prefs), default=str)
+    try : 
+        user_prefs = json.loads(event["queryStringParameters"]['data'])
+    except :
+        return {
+            'statusCode': 400,
+            'body': json.dumps("Error parsing JSON")
+        }
+    
+    try : 
+        return json.dumps(get_schedule(user_prefs), default=str)
+    except ScheduleException as e :
+        return {
+            'statusCode': 400,
+            'body': json.dumps(str(e))
+        }
+

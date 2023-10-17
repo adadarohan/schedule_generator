@@ -21,7 +21,7 @@ def find_validate_xml (base, search) :
     
 def update_sections (clas):
 
-    resp = requests.get(clas["api_link"])
+    resp = requests.get(clas["api_link"], timeout=10)
     if resp.status_code == 404 :
         print("Error Link not found: " + clas["name"])
         raise Exception("Error Link not found: " + clas["name"])
@@ -34,7 +34,7 @@ def update_sections (clas):
     sections = []
 
     for section in clas_root.find("sections").findall("section") :
-        resp = requests.get(section.attrib["href"])
+        resp = requests.get(section.attrib["href"], timeout=10)
         if resp.status_code == 404 :
             print("Error Link not found: " + section.attrib["href"])
             continue
@@ -124,6 +124,10 @@ def update_sections (clas):
             'meetings': meetings,
         })
     
+    if sections == [] :
+        print("No sections found")
+        raise Exception("No sections found")
+    
     classes.update_one({'_id': clas['_id']}, {'$set': {'sections': sections, 'last_updated': datetime.now()}})
     return json.dumps(sections, default=str)
 
@@ -136,10 +140,17 @@ def get_sections (code, number) :
         return None
     if 'last_updated' not in selected_class :
         print("Updating sections")
-        return update_sections(selected_class)
+        try : 
+            return update_sections(selected_class)
+        except Exception as e :
+            print(f"Error updating sections with error {e}")
     if (datetime.now() - selected_class['last_updated']).total_seconds() > 60 * 10 :
         print("Updating sections")
-        return update_sections(selected_class)
+        try : 
+            return update_sections(selected_class)
+        except Exception as e :
+            print(f"Error updating sections with error {e}")
+    
     print("Using cached sections")
     return json.dumps(selected_class['sections'], default=str)
 

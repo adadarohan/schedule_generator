@@ -96,7 +96,7 @@ function Step3(props) {
                 <p>{section.crn}</p>
                 <p className="col-span-2" >{section.meetings[0].type}</p>
                 <p className="col-span-4">{section.section_text}</p>
-
+                
                 {
                   (props.userPrefs.pref_sections.includes(section.crn) ?
                   <p className="material-symbols-rounded text-2xl cursor-pointer" style={{"fontVariationSettings":"'FILL' 1"}} onClick={()=> handleUnFavouriteSection(section.crn)}>grade</p>

@@ -14,7 +14,8 @@ function Step1(props) {
     useEffect(() => {
       props.setUserPrefs({
         ...props.userPrefs,
-        classes_1: chosen_classes
+        classes_1: chosen_classes,
+        classes : []
       })
     }, [chosen_classes])
 
@@ -27,7 +28,7 @@ function Step1(props) {
 
         <div className="flex flex-row flex-wrap pt-20 pl-10">
           {chosen_classes.map((item, index) => (
-            <ClassPill name={item} key={index} chosen_classes={chosen_classes} setChosenClasses={setChosenClasses}/>
+            <ClassPill name={item} key={index} chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} setShowPlus={setShowPlus}/>
           ))}
 
           {showPlus ? 
