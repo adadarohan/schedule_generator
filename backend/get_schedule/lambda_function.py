@@ -4,9 +4,10 @@ import os
 import itertools 
 import haversine as hs
 import json
+import datetime
 
 load_dotenv()
-
+   
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
 db = client["schedule"]
@@ -42,20 +43,27 @@ def fetch_section_data (class_list) :
                     "code" : class_["code"],
                     "number" : class_["number"]
                 }
+                # Drop online lecture sections
+                meeting_type_codes = [meeting["type_code"] for meeting in section["meetings"]]
+                if ("OLC" in meeting_type_codes) :
+                    continue
                 class_["sections"].append(section)
 
     return class_list
 
 def is_preferred_time (section, start_time, end_time) :
-    earliest_meeting = section["meetings"][0]['start_time']
-    latest_meeting = section["meetings"][0]['end_time']
-    for meeting in section["meetings"] :
-        if meeting['start_time'] < earliest_meeting :
-            earliest_meeting = meeting['start_time']
-        if meeting['end_time'] > latest_meeting :
-            latest_meeting = meeting['end_time']
+    earliest_meeting = start_time
+    latest_meeting = end_time
 
-    return earliest_meeting.hour > start_time and latest_meeting.hour < end_time
+    for meeting in section["meetings"] :
+        if meeting['start_time'] is None or meeting['end_time'] is None :
+            continue
+        if meeting['start_time'].hour < earliest_meeting :
+            earliest_meeting = meeting['start_time'].hour
+        if meeting['end_time'].hour > latest_meeting :
+            latest_meeting = meeting['end_time'].hour
+
+    return earliest_meeting >= start_time and latest_meeting <= end_time
 
 def delete_unpreferred_sections (class_list, start_time, end_time) :
     for clas in class_list :
@@ -110,8 +118,13 @@ def convert_to_time_based (list_of_sections) :
 
     for section in list_of_sections :
         for meeting in section['meetings'] :
+
+            if meeting['start_time'] is None or meeting['end_time'] is None :
+                continue
+
             start_hour = meeting['start_time'].hour
             end_hour = meeting['end_time'].hour
+
             for day in list(meeting['days'].strip()) :
                 for hour in range(start_hour, end_hour+1) :
                     section_copy = section  
@@ -262,4 +275,3 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps(str(e))
         }
-

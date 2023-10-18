@@ -64,7 +64,7 @@ function Step5(props) {
       <div className="flex flex-row pt-20 pl-10">
         <p className="text-4xl pr-4">I would like a </p>
         <div className="rounded-full border-black border-2 py-1 px-3 mr-4">
-          <input type="number" className="w-16 text-4xl bg-transparent text-center leading-9" value={lunchDuration} onChange={(e) => setLunchDuration(e.target.value)}></input>
+          <input type="number" className="w-16 text-4xl bg-transparent text-center leading-9" value={lunchDuration} onChange={(e) => setLunchDuration(parseInt(e.target.value))}></input>
         </div>
         <p className="text-4xl">hour lunch break</p>
       </div>

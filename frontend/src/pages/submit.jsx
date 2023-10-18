@@ -62,10 +62,17 @@ export default function Submit(props) {
 
     fetch("https://ufm2ujglzj6q55eplsst6nhxbu0erlzn.lambda-url.us-east-2.on.aws/?data=" + encodeURIComponent(json_string) )
     .then(response => {
+      
+      if (response.status == 400) {
+        console.log("Bad request", response)
+        navigate("/error?error=Bad%20Request")
+      }
+      
       if (!response.ok) {
         console.log("Unknown error from server")
         navigate("/error?error=Unknown%20Error")
       }
+
       try {
         return response.json()
       } catch {
