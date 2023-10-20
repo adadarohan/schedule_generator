@@ -15,6 +15,7 @@ import Step6 from "./pages/step6";
 import Step7 from "./pages/step7";
 import Submit from "./pages/submit";
 import Results from "./pages/results";
+import Export from "./pages/export";
 import Error from "./pages/error";
 
 /*
@@ -95,6 +96,10 @@ export default function App () {
         {
             path: "/error",
             element: <Error/>
+        },
+        {
+            path: "/export",
+            element: <Export schedules={schedules} chosenSchedule={chosenSchedule}/>
         }
       ]);
 

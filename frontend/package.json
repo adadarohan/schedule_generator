@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy" : "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive"
   },
   "dependencies": {
     "downshift": "^8.2.2",

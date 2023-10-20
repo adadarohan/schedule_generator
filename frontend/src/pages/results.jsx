@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 function Results(props) {
 
   const navigate = useNavigate()
 
   function handleNext() {
-    console.log(props.chosenSchedule)
+    navigate('/export')
   }
 
 

@@ -23,6 +23,8 @@ function Home() {
           <h5 className="text-4xl">get started</h5>
           <span className="material-symbols-outlined text-5xl">chevron_right</span>
         </div>
+
+        <p className="text-xl fixed bottom-0 left-0 pb-7 pl-10">Created by <b>Rohan Kapur</b> using React & Python </p>
       </div>
     )
   } else {
