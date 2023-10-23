@@ -8,13 +8,14 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy" : "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive"
+    "deploy": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive"
   },
   "dependencies": {
     "downshift": "^8.2.2",
     "material-symbols": "^0.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-ga4": "^2.1.0",
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {

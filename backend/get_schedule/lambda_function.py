@@ -102,9 +102,12 @@ def generate_schedule_combinations (class_list) :
 
     # Remove sections in groups that have the same time and days
     # TODO
+    print(groups)
 
     possible_schedules = list(itertools.product(*groups.values()))
 
+    print(possible_schedules)
+    
     return possible_schedules
 
 def convert_to_time_based (list_of_sections) : 

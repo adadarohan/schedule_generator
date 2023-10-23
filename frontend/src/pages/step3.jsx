@@ -72,6 +72,10 @@ function Step3(props) {
     }
   }
 
+  function resetSections() {
+    getSections(class_code, class_number)
+  }
+
   return (
     <div className="font-serif max-h-screen flex flex-col">
       <div className="pl-10 pt-12">
@@ -80,7 +84,11 @@ function Step3(props) {
       </div>
 
       <div className="flex flex-col pt-12 pl-10 max-h-[70vh]">
-        <p className="text-4xl">{class_code} {class_number}</p>
+        <div className="flex flex-row justify-between mr-20">
+          <p className="text-4xl">{class_code} {class_number}</p>
+          <p className="material-symbols-rounded text-4xl cursor-pointer" onClick={resetSections}>refresh</p>
+
+        </div>
         <hr className="mr-10 mt-3 border-black border-[1.5px] mb-5"></hr>
         <div className="overflow-auto mb-5">
 
