@@ -21,7 +21,6 @@ weights = {
     "section" : 10,
     "lunch" : 7.5
 }
-
 class ScheduleException(Exception):
     pass
 
@@ -100,13 +99,9 @@ def generate_schedule_combinations (class_list) :
             group_key = base_group_name + "_".join([str(x) for x in list_of_meeting_types])
             groups[group_key] = groups.get(group_key, []) + [section]
 
-    # Remove sections in groups that have the same time and days
-    # TODO
-    print(groups)
-
     possible_schedules = list(itertools.product(*groups.values()))
 
-    print(possible_schedules)
+    print(f"Number of possible schedules: {len(possible_schedules)}")
     
     return possible_schedules
 

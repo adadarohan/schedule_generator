@@ -59,14 +59,16 @@ export default function Submit(props) {
     }
 
     let json_string = JSON.stringify(props.userPrefs)
+    let is_errored = false
 
     fetch("https://ufm2ujglzj6q55eplsst6nhxbu0erlzn.lambda-url.us-east-2.on.aws/?data=" + encodeURIComponent(json_string) )
     .then(response => {
       
       if (response.status == 400) {
         console.log("Bad request", response)
-        navigate("/error?error=Bad%20Request")
-      }
+        is_errored = true
+        return response.json()
+      } 
       
       if (!response.ok) {
         console.log("Unknown error from server")
@@ -79,11 +81,18 @@ export default function Submit(props) {
         console.log("Unknown error from server")
         navigate("/error?error=Unknown%20Error")
       }
+
     })
     .then(data => {
       if (data.length == 0) {
         console.log("No results")
         navigate("/error?error=No%20Results")
+        return
+      }
+
+      if (is_errored) {
+        console.log("Error from server 1", data)
+        navigate("/error?error=" + encodeURIComponent(data))
         return
       }
 

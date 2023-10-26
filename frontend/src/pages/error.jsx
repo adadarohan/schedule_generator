@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 export default function Error() {
   const queryParameters = new URLSearchParams(window.location.search)
   const error = queryParameters.get("error")
-
-  console.error(error);
-
   
   return (
     <div className="font-serif">
