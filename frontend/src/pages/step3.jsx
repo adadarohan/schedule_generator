@@ -97,12 +97,13 @@ function Step3(props) {
             <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-gray-900"></div>
           </div>
           :
-          <div className="w-[90%] grid grid-cols-10 gap-x-2 gap-y-4">
+          <div className=" grid grid-cols-12 gap-x-2 gap-y-4">
               {currentClassSections.map((section, index) => (
               <div key={index} className="contents hover:font-medium">
                 <p >{section.section_number}</p>
                 <p>{section.crn}</p>
                 <p className="col-span-2" >{section.meetings[0].type}</p>
+                <p className="col-span-2">{section.meetings[0].instructors[0]}</p>
                 <p className="col-span-4">{section.section_text}</p>
                 
                 {

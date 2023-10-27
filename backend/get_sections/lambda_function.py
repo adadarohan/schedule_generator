@@ -108,6 +108,7 @@ def update_sections (clas):
                 'room_number' : find_validate_xml(meeting, "roomNumber"),
                 'building_name' : find_validate_xml(meeting, "buildingName"),
                 'coordinates' : coordinates,
+                'instructors' : instructors,
             })
 
         sections.append({
