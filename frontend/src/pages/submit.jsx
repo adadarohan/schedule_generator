@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import ReactGA from "react-ga4";
 
 export default function Submit(props) {
   
   const navigate = useNavigate()
+
+  ReactGA.event({
+    category: "generate_lead",
+    action: "schedule_created"
+  });
 
   useEffect(() => {
 

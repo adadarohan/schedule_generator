@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import ReactGA from 'react-ga4';
 
 function Home() {
 
@@ -7,6 +8,12 @@ function Home() {
   const navigate = useNavigate()
 
   function handleNext() {
+
+    ReactGA.event({
+      category: "generate_lead",
+      action: "form_started"
+    });
+
     setIsLoading(true)
     navigate(`form/1`)
   }
