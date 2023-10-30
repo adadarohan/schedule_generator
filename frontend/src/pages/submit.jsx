@@ -109,12 +109,12 @@ export default function Submit(props) {
 
   return (
     <div className="font-serif">
-        <div className="pl-10 pt-32">
-          <h2 className="text-7xl">the magic</h2>
-          <h1 className="font-display text-[84px] pt-2 loading">is happening </h1>
+        <div className="pl-5 sm:pl-10 pt-32">
+          <h2 className="text-4xl sm:text-7xl">the magic</h2>
+          <h1 className="font-display text-5xl sm:text-[84px] pt-2 loading">is happening </h1>
         </div>
 
-        <h5 className="text-4xl pl-10 pt-20">this can sometimes take a minute or two</h5>
+        <h5 className="text-2xl sm:text-4xl px-5 sm:pl-10 pt-32 sm:pt-20">this can sometimes take a minute or two</h5>
     </div>
   );
 }

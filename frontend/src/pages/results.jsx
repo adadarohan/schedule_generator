@@ -75,7 +75,7 @@ function Results(props) {
         }
 
         jsx.push(
-          <div key={i} className="h-full flex flex-col justify-center items-center rounded-2xl bg-transparent border-black border-2 mx-4"  style={{"gridRow":"span " + length + " / span " + length}}>
+          <div key={i} className="h-full flex flex-col justify-center items-center rounded-2xl bg-transparent border-black border-2 px-3 mx-2"  style={{"gridRow":"span " + length + " / span " + length}}>
             <p className="text-2xl text-center">{class_.class.code} {class_.class.number}</p>
             <p className="text-xl text-center">{class_.meetings[0].type}</p>
           </div>
@@ -96,12 +96,12 @@ function Results(props) {
 
   return (
     <div className="font-serif">
-      <div className="pl-10 pt-12 pb-10">
-        <h2 className="text-5xl">Step 8</h2>
-        <h1 className="font-display text-5xl pt-2">choose a schedule!</h1>
+      <div className="px-5 sm:pl-10 pt-12 pb-10">
+        <h2 className="text-3xl sm:text-5xl">Step 8</h2>
+        <h1 className="font-display text-3xl sm:text-5xl pt-2">choose a schedule!</h1>
       </div>
 
-      <div style={{"gridTemplateRows":"auto repeat(" + String(hourList.length) +  " , 1fr)"}} className="grid grid-flow-col grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] gap-x-2 gap-y-3 px-10 max-h-[50vh] overflow-auto">
+      <div style={{"gridTemplateRows":"auto repeat(" + String(hourList.length) +  " , auto)"}} className="grid grid-flow-col grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] gap-x-2 gap-y-3 px-10 max-h-[50vh] overflow-auto">
         <div className="contents">
           <p></p>
           {
@@ -120,23 +120,24 @@ function Results(props) {
 
       </div>
 
-      <div onClick={handleNext} className="fixed bottom-0 right-0 pb-8 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
-          <h5 className="text-4xl">next</h5>
-          <span className="material-symbols-outlined text-4xl">chevron_right</span>
-      </div>
-
-      <div className="fixed bottom-0 left-0 pl-10 pb-8 flex flex-row">
+      <div className="flex px-5 mt-10 sm:fixed sm:bottom-0 sm:left-0 sm:pl-10 sm:pb-8 flex-row overflow-auto">
         {schedule_options.map((number, index) => (
             (number == props.chosenSchedule) ?
-              <div key={index} className="rounded-full bg-black border-black border-2 py-2 px-3 mr-4">
-                < p className="text-3xl text-white text-center px-4">option {number + 1}</p>
+              <div key={index} className="rounded-full bg-black border-black border-2 py-2 px-3 mr-4 min-w-max">
+                < p className="text-2xl sm:text-3xl text-white text-center px-2 sm:px-4">option {number + 1}</p>
               </div>
             :
-              <div key={index} className="rounded-full  border-black border-2 py-2 px-3 mr-4 cursor-pointer" onClick={() => {props.setChosenSchedule(number)}}>
-                < p className="text-3xl text-center px-4">option {number + 1}</p>
+              <div key={index} className="rounded-full  border-black border-2 py-2 px-3 mr-4 cursor-pointer min-w-max" onClick={() => {props.setChosenSchedule(number)}}>
+                < p className="text-2xl sm:text-3xl text-center px-2 sm:px-4">option {number + 1}</p>
               </div>
           ))
         }
+      </div>
+
+      
+      <div onClick={handleNext} className="fixed bottom-0 right-0 pb-5 sm:pb-8 pr-8 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
+          <h5 className="text-4xl">next</h5>
+          <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>
       
     </div>

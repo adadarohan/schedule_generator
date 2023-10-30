@@ -48,64 +48,64 @@ function Step4(props) {
 
   return (
     <div className="font-serif">
-      <div className="pl-10 pt-12">
-        <h2 className="text-5xl">Step 4</h2>
-        <h1 className="font-display text-5xl pt-2">select class times</h1>
+      <div className="px-5 sm:pl-10 pt-12">
+        <h2 className="text-3xl sm:text-5xl">Step 4</h2>
+        <h1 className="font-display text-3xl sm:text-5xl pt-2">select class times</h1>
       </div>
 
-      <div className="pt-10 pl-10">
-        <p className="text-4xl">earliest class time:</p>
-        <div className="flex flex-row pt-3">
+      <div className="pt-8 sm:pt-10 px-5 sm:pl-10">
+        <p className="text-3xl sm:text-4xl">earliest class time:</p>
+        <div className="flex flex-row flex-wrap pt-3">
           {earlyTimes.map((time, index) => (
             (time.time == earliestTime) ?
-              <div key={index} className="rounded-full bg-black border-black border-2 py-2 px-3 mr-4">
-                < p className="text-3xl text-white text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full bg-black border-black border-2 py-1 sm:py-2 px-3 mr-2 sm:mr-4 mb-2 min-w-max">
+                < p className="text-2xl sm:text-3xl text-white text-center px-2 sm:px-4">{time.text}</p>
               </div>
             :
-              <div key={index} className="rounded-full  border-black border-2 py-2 px-3 mr-4 cursor-pointer" onClick={() => {setEarliestTime(time.time)}}>
-                < p className="text-3xl text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full  border-black border-2 py-1 sm:py-2 px-3 mb-2 mr-2 sm:mr-4 cursor-pointer min-w-max" onClick={() => {setEarliestTime(time.time)}}>
+                < p className="text-2xl sm:text-3xl text-center px-2 sm:px-4">{time.text}</p>
               </div>
           ))
         }
         </div>
       </div>
 
-      <div className="pt-10 pl-10">
-        <p className="text-4xl">latest class time:</p>
-        <div className="flex flex-row pt-3">
+      <div className="pt-8 sm:pt-10 px-5 sm:pl-10">
+        <p className="text-3xl sm:text-4xl">latest class time:</p>
+        <div className="flex flex-row flex-wrap pt-3">
           {lateTimes.map((time, index) => (
             (time.time == latestTime) ?
-              <div key={index} className="rounded-full bg-black border-black border-2 py-2 px-3 mr-4">
-                < p className="text-3xl text-white text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full bg-black border-black border-2 py-1 sm:py-2 px-3 mr-2 sm:mr-4 mb-2 min-w-max">
+                < p className="text-2xl sm:text-3xl text-white text-center px-2 sm:px-4">{time.text}</p>
               </div>
             :
-              <div key={index} className="rounded-full  border-black border-2 py-2 px-3 mr-4 cursor-pointer" onClick={() => {setLatestTime(time.time)}}>
-                < p className="text-3xl text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full  border-black border-2  py-1 sm:py-2 px-3 mb-2 mr-2 sm:mr-4 cursor-pointer min-w-max" onClick={() => {setLatestTime(time.time)}}>
+                < p className="text-2xl sm:text-3xl text-center px-2 sm:px-4">{time.text}</p>
               </div>
           ))
         }
         </div>
       </div>
 
-      <div className="pt-10 pl-10">
-        <p className="text-4xl">preferred class time:</p>
-        <div className="flex flex-row pt-3">
+      <div className="pt-8 sm:pt-10 px-5 sm:pl-10">
+        <p className="text-3xl sm:text-4xl">preferred class time:</p>
+        <div className="flex flex-row flex-wrap pt-3">
           {prefTimes.map((time, index) => (
             (time.time == prefTime) ?
-              <div key={index} className="rounded-full bg-black border-black border-2 py-2 px-3 mr-4">
-                < p className="text-3xl text-white text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full bg-black border-black border-2 py-1 sm:py-2 px-3 mr-2 sm:mr-4 mb-2 min-w-max">
+                < p className="text-2xl sm:text-3xl text-white text-center px-2 sm:px-4">{time.text}</p>
               </div>
             :
-              <div key={index} className="rounded-full  border-black border-2 py-2 px-3 mr-4 cursor-pointer" onClick={() => {setPrefTime(time.time)}}>
-                < p className="text-3xl text-center px-4">{time.text}</p>
+              <div key={index} className="rounded-full  border-black border-2  py-1 sm:py-2 px-3 mb-2 mr-2 sm:mr-4 cursor-pointer min-w-max" onClick={() => {setPrefTime(time.time)}}>
+                < p className="text-2xl sm:text-3xl text-center px-2 sm:px-4">{time.text}</p>
               </div>
           ))
         }
         </div>
       </div>
 
-      <div onClick={handleNext} className="fixed bottom-0 right-0 pb-8 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
-          <h5 className="text-4xl">next</h5>
+      <div onClick={handleNext} className="fixed bottom-0 right-0 pb-8 pr-10 sm:pr-16 transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
+          <h5 className="text-3xl sm:text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>
       

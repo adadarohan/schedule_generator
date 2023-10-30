@@ -21,17 +21,17 @@ function Home() {
   if (!isLoading) {
     return (
       <div className="font-serif">
-        <div className="pl-10 pt-32">
-          <h2 className="text-7xl">The better</h2>
-          <h1 className="font-display text-[84px] pt-2">Schedule Generator.</h1>
+        <div className="sm:pl-10 pt-40 sm:pt-32">
+          <h2 className="text-4xl text-center sm:text-7xl sm:text-left">The better</h2>
+          <h1 className="font-display text-5xl text-center sm:text-[84px] pt-4 sm:text-left sm:pt-2">Schedule Generator.</h1>
         </div>
 
-        <div onClick={handleNext} className="cursor-pointer pl-10 pt-20 transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max">
-          <h5 className="text-4xl">get started</h5>
-          <span className="material-symbols-outlined text-5xl">chevron_right</span>
+        <div onClick={handleNext} className="cursor-pointer sm:pl-10 pt-20 transition hover:-translate-y-2 flex flex-row sm:justify-start duration-300 justify-center">
+          <h5 className="text-3xl sm:text-4xl">get started</h5>
+          <span className="material-symbols-outlined text-4xl sm:text-5xl">chevron_right</span>
         </div>
 
-        <p className="text-xl fixed bottom-0 left-0 pb-7 pl-10">Created by <b>Rohan Kapur</b> using React & Python </p>
+        <p className=" text-lg sm:text-xl fixed bottom-0 left-0 pb-7 px-10 sm:pl-10 text-center sm:text-left">Created by <b>Rohan Kapur</b> using React & Python </p>
       </div>
     )
   } else {

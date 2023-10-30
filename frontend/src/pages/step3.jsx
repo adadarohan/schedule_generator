@@ -78,18 +78,18 @@ function Step3(props) {
 
   return (
     <div className="font-serif max-h-screen flex flex-col">
-      <div className="pl-10 pt-12">
-        <h2 className="text-5xl">Step 3</h2>
-        <h1 className="font-display text-5xl pt-2">select your sections ({classNumber + 1}/{number_of_classes})</h1>
+      <div className="px-5 sm:pl-10 pt-12">
+        <h2 className="text-3xl sm:text-5xl">Step 3</h2>
+        <h1 className="font-display text-3xl sm:text-5xl pt-2">select your sections ({classNumber + 1}/{number_of_classes})</h1>
       </div>
 
-      <div className="flex flex-col pt-12 pl-10 max-h-[70vh]">
-        <div className="flex flex-row justify-between mr-20">
-          <p className="text-4xl">{class_code} {class_number}</p>
-          <p className="material-symbols-rounded text-4xl cursor-pointer" onClick={resetSections}>refresh</p>
+      <div className="flex flex-col pt-8 sm:pt-12 px-5 sm:pl-10 max-h-[65vh] sm:max-h-[70vh]">
+        <div className="flex flex-row justify-between mr-5 sm:mr-20">
+          <p className="text-2xl sm:text-4xl">{class_code} {class_number}</p>
+          <p className="material-symbols-rounded text-3xl sm:text-4xl cursor-pointer" onClick={resetSections}>refresh</p>
 
         </div>
-        <hr className="mr-10 mt-3 border-black border-[1.5px] mb-5"></hr>
+        <hr className="mr-5 sm:mr-10 mt-2 sm:mt-3 border-black border-[1.5px] mb-5"></hr>
         <div className="overflow-auto mb-5">
 
           {isLoading ?
@@ -97,11 +97,11 @@ function Step3(props) {
             <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-gray-900"></div>
           </div>
           :
-          <div className=" grid grid-cols-12 gap-x-2 gap-y-4">
+          <div className="grid grid-cols-[repeat(_12,_auto)] gap-x-3 gap-y-4 min-w-fit">
               {currentClassSections.map((section, index) => (
               <div key={index} className="contents hover:font-medium">
                 <p >{section.section_number}</p>
-                <p>{section.crn}</p>
+                <p >{section.crn}</p>
                 <p className="col-span-2" >{section.meetings[0].type}</p>
                 <p className="col-span-2">{section.meetings[0].instructors[0]}</p>
                 <p className="col-span-4">{section.section_text}</p>
@@ -121,12 +121,14 @@ function Step3(props) {
         </div>
       </div>
 
-      <div onClick={handlenext} className="fixed bottom-0 right-0 pb-8 pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
-          <h5 className="text-4xl">next</h5>
+      <p className="text-sm px-5">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
+
+      <div onClick={handlenext} className="fixed bottom-0 right-0 pb-8 pr-10 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
+          <h5 className="text-3xl sm:text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>
 
-      <p className="fixed bottom-0 left-0 pb-2 pl-10 text-lg">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
+      <p className="hidden sm:block fixed bottom-0 left-0 pb-2 pl-10 text-lg">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
     </div>
   )
 }

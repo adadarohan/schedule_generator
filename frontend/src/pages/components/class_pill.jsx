@@ -11,9 +11,9 @@ function ItemRemoved (props) {
 
 function ClassPill(props) {
     return (
-        <div className="flex flex-row rounded-full bg-transparent border-black border-2 py-3 px-3 mr-4 self-start mb-5 ">
-            <p  className="text-3xl bg-transparent outline-none placeholder:text-slate-600 text-center px-4">{props.name}</p>
-            <span className="material-symbols-outlined text-4xl pr-3 cursor-pointer" onClick={() => ItemRemoved(props)}>close</span>
+        <div className="flex flex-row rounded-full bg-transparent border-black border-2 py-2 sm:py-3 px-3 mr-4 self-start mb-5 ">
+            <p  className="text-2xl sm:text-3xl bg-transparent outline-none placeholder:text-slate-600 text-center px-3 sm:px-4">{props.name}</p>
+            <span className="material-symbols-outlined text-3xl sm:text-4xl sm:pr-3 cursor-pointer" onClick={() => ItemRemoved(props)}>close</span>
         </div>
     )
 }
