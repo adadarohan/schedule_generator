@@ -5,7 +5,7 @@ import itertools
 import haversine as hs
 import json
 import datetime
-import multiprocessing as mp
+import math
 
 load_dotenv()
 
@@ -137,7 +137,11 @@ def generate_schedule_combinations(class_list, user_preferences):
     for key, value in groups.items():
         un_duplicated_groups[key] = remove_duplicates(value, user_preferences["pref_sections"])
 
-    print('group_lengths : ' , [len(x) for x in un_duplicated_groups.values()])
+    possible_schedules_length = math.prod([len(x) for x in un_duplicated_groups.values()])
+
+    if possible_schedules_length > 1_000_000:
+        raise ScheduleException("overflow")
+    
     possible_schedules = itertools.product(*un_duplicated_groups.values())
 
     return possible_schedules
@@ -277,27 +281,18 @@ def compute_schedule_score(list_of_sections, user_preferences) -> float:
     ls = lunch_score(schedule, user_preferences["lunch"])
     return (ds + btb + ts + ss + ls), schedule
 
-def multithreaded_implementation(args):
-    schedule, user_preferences = args
-    score, time_schedule = compute_schedule_score(schedule, user_preferences)
-    if score is not None:
-        return {
-            "time_schedule": time_schedule,
-            "schedule": schedule,
-            "score": score
-        }
-    else:
-        return None
-
 def sort_schedules(possible_schedules, user_preferences):
-
-    pool = mp.Pool()
-    results = pool.map(multithreaded_implementation, [(schedule, user_preferences) for schedule in possible_schedules])
-    pool.close()
-    pool.join()
-
-    sorted_schedules = [x for x in results if x is not None]
-
+    sorted_schedules = []
+    for schedule in possible_schedules:
+        score, time_schedule = compute_schedule_score(schedule, user_preferences)
+        if score is not None:
+            sorted_schedules.append(
+                {
+                    "time_schedule": time_schedule,
+                    "schedule": schedule,
+                    "score": score
+                }
+            )
     if len(sorted_schedules) == 0:
         raise ScheduleException("No possible schedules found. Please try again with different preferences.")
     sorted_schedules.sort(key=lambda x: x["score"], reverse=True)
