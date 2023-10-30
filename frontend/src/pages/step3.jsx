@@ -97,7 +97,7 @@ function Step3(props) {
             <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-gray-900"></div>
           </div>
           :
-          <div className="grid grid-cols-[repeat(_12,_auto)] gap-x-3 gap-y-4 min-w-fit">
+          <div className="grid grid-cols-[repeat(_12,_auto)] gap-x-3 sm:gap-x-5 gap-y-4 min-w-fit pr-4">
               {currentClassSections.map((section, index) => (
               <div key={index} className="contents hover:font-medium">
                 <p >{section.section_number}</p>
@@ -121,14 +121,14 @@ function Step3(props) {
         </div>
       </div>
 
-      <p className="text-sm px-5">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
+      <p className="sm:hidden text-sm px-5">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
 
-      <div onClick={handlenext} className="fixed bottom-0 right-0 pb-8 pr-10 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
+      <div onClick={handlenext} className="fixed bottom-0 right-0 pb-6 pr-10 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
           <h5 className="text-3xl sm:text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>
 
-      <p className="hidden sm:block fixed bottom-0 left-0 pb-2 pl-10 text-lg">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
+      <p className="hidden sm:block fixed bottom-0 left-0 pb-5 pl-10 text-lg">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
     </div>
   )
 }

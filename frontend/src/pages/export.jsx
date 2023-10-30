@@ -40,7 +40,7 @@ function Export(props) {
       </div>
 
       <div className="fixed bottom-0 left-0 px-5 sm:pl-10 pb-8 flex flex-row flex-wrap">
-        <Link className="rounded-full bg-black border-black border-2 py-2 px-3 mr-6 cursor-pointer mb-5" to="https://forms.gle/ZF2ABDbhEJBWPDqr8">
+        <Link className="rounded-full bg-black border-black border-2 py-2 px-3 mr-6 cursor-pointer mb-5 sm:mb-0" to="https://forms.gle/ZF2ABDbhEJBWPDqr8">
           <p className="text-2xl sm:text-3xl text-white text-center px-4">leave some feedback!</p>
         </Link>
 
