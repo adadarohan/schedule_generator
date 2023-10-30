@@ -17,6 +17,7 @@ import Submit from "./pages/submit";
 import Results from "./pages/results";
 import Export from "./pages/export";
 import Error from "./pages/error";
+import Overflow from "./pages/overflow";
 
 export default function App () {
   
@@ -95,6 +96,11 @@ export default function App () {
       {
           path: "/export",
           element: <Export schedules={schedules} chosenSchedule={chosenSchedule}/>,
+          errorElement: <Error/>
+      },
+      {
+          path: "/overflow",
+          element: <Overflow/>,
           errorElement: <Error/>
       }
     ]);

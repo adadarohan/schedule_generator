@@ -97,6 +97,11 @@ export default function Submit(props) {
       }
 
       if (is_errored) {
+        if (data == "overflow") {
+          console.log("Overflow error")
+          navigate("/overflow")
+          return
+        }
         console.log("Error from server 1", data)
         navigate("/error?error=" + encodeURIComponent(data))
         return
