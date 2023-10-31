@@ -23,16 +23,16 @@ weights = {
     "lunch": 7.5
 }
 
-
 class ScheduleException(Exception):
     pass
 
-
-def check_for_no_section(classes_to_take):
+def check_for_no_section(classes_to_take, open_sections_filter_applied):
     for clas in classes_to_take:
         if len(clas["sections"]) == 0:
-            raise ScheduleException(
-                "No sections found for " + clas["code"] + " " + clas["number"])
+            if (open_sections_filter_applied):
+                raise ScheduleException(f"No open sections found for {clas['code']} {clas['number']} in your specified time range. Please try again with a different time range.")
+            else:
+                raise ScheduleException(f"No sections found for {clas['code']} {clas['number']} in your specified time range. Please try again with a different time range.")
 
 
 def fetch_section_data(class_list):
@@ -89,13 +89,13 @@ def delete_closed_sections(class_list, open_sections_only):
 
 
 def apply_hard_filters(user_preferences):
-
     class_list = fetch_section_data(user_preferences["classes"])
     class_list = delete_unpreferred_sections(class_list, user_preferences["start_time"], user_preferences["end_time"])
-    class_list = delete_closed_sections(
-        class_list, user_preferences["open_sections_only"])
+    check_for_no_section(class_list, False)  # Check if any class has no sections
 
-    check_for_no_section(class_list)  # Check if any class has no sections
+    class_list = delete_closed_sections(class_list, user_preferences["open_sections_only"])
+
+    check_for_no_section(class_list, True)  # Check if any class has no sections
 
     return class_list
 

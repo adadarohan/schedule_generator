@@ -12,7 +12,7 @@ function Export(props) {
         <h1 className="font-display text-3xl sm:text-5xl pt-2">register and save</h1>
       </div>
 
-      <div className="flex flex-col pt-10 sm:pt-12 px-5 sm:pl-10 max-h-[70vh]">
+      <div className="flex flex-col pt-10 sm:pt-12 px-5 sm:pl-10 max-h-[60vh]">
         <p className="text-xl sm:text-2xl">Add the following sections to your course explorer</p>
         <hr className="mr-10 mt-3 border-black border-[1.5px] mb-5"></hr>
 

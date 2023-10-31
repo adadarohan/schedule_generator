@@ -14,11 +14,11 @@ function Step2(props) {
 
       <div className="flex flex-col pt-20 px-5 sm:pl-10">
         <Link to="/form/3" onClick={handleOpen} className="rounded-full bg-transparent border-black border-2 py-2 sm:py-3 px-3 mb-8 self-start hover:bg-black hover:text-white transition-all delay-100 ease-in-out">
-          <p className="text-2xl sm:text-3xl bg-transparent outline-none text-center px-2 sm:px-4">open sections only</p>
+          <p className="text-2xl sm:text-3xl bg-transparent outline-none text-center px-2 sm:px-4">sections with spots available</p>
         </Link>
 
         <Link to="/form/3" onClick={handleClosed} className="rounded-full bg-transparent border-black border-2 py-2 sm:py-3 px-1 sm:px-3 mb-5 self-start hover:bg-black hover:text-white transition-all delay-100 ease-in-out">
-          <p className="text-2xl sm:text-3xl bg-transparent outline-none text-center px-2 sm:px-4">both closed and open sections</p>
+          <p className="text-2xl sm:text-3xl bg-transparent outline-none text-center px-2 sm:px-4">all sections</p>
         </Link>
 
       </div>
