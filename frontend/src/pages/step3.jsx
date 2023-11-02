@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTour } from '@reactour/tour'
 
 function Step3(props) {
+  const { setIsOpen } = useTour()
 
   let [classNumber, setClassNumber] = useState(0)
   let [currentClassSections, setCurrentClassSections] = useState([])
@@ -15,10 +17,10 @@ function Step3(props) {
   let navigate = useNavigate()
 
   useEffect(() => {
-    getSections(class_code, class_number)
+    getSections(class_code, class_number, true)
   } , [])
 
-  function getSections(code, number) {
+  function getSections(code, number, first_time=false) {
     console.log("Getting sections for " + code + " " + number)
     setIsLoading(true)
     fetch("https://cdb4rxbcs5qwph6x3oju4nkjrq0xzupa.lambda-url.us-east-2.on.aws/?code=" + code + "&number=" + number)
@@ -26,6 +28,9 @@ function Step3(props) {
     .then(data => {
       setIsLoading(false)
       setCurrentClassSections(data)
+      if (first_time) {
+        setIsOpen(true)
+      }
     })
   }
 
@@ -110,10 +115,10 @@ function Step3(props) {
                   (props.userPrefs.pref_sections.includes(section.crn) ?
                   <p className="material-symbols-rounded text-2xl cursor-pointer" style={{"fontVariationSettings":"'FILL' 1"}} onClick={()=> handleUnFavouriteSection(section.crn)}>grade</p>
                   :
-                  <p className="material-symbols-rounded text-2xl cursor-pointer" onClick={()=> handleFavouriteSection(section.crn)}>grade</p>
+                  <p className="material-symbols-rounded text-2xl cursor-pointer first-step" onClick={()=> handleFavouriteSection(section.crn)}>grade</p>
 
                 )}
-                <p className="material-symbols-rounded text-2xl cursor-pointer" onClick={()=> handleRemoveSection(section.crn)}>close</p>
+                <p className="material-symbols-rounded text-2xl cursor-pointer second-step" onClick={()=> handleRemoveSection(section.crn)}>close</p>
               </div> 
               ))}
           </div>
@@ -123,7 +128,7 @@ function Step3(props) {
 
       <p className="sm:hidden text-sm px-5">Don’t worry about timings or locations, we’ll take care of that later. Starred sections are preferred. </p>
 
-      <div onClick={handlenext} className="fixed bottom-0 right-0 pb-6 pr-10 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
+      <div onClick={handlenext} className="third-step fixed bottom-0 right-0 pb-6 pr-10 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
           <h5 className="text-3xl sm:text-4xl">next</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>

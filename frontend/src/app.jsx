@@ -18,6 +18,7 @@ import Results from "./pages/results";
 import Export from "./pages/export";
 import Error from "./pages/error";
 import Overflow from "./pages/overflow";
+import { TourProvider } from '@reactour/tour'
 
 export default function App () {
   
@@ -105,7 +106,25 @@ export default function App () {
       }
     ]);
 
+
+    const steps = [
+      {
+        selector: '.first-step',
+        content: 'Love a professor or section? Click here to favourite it!',
+      },
+      {
+        selector: '.second-step',
+        content: 'Not eligible for a section or want to remove it? Click here to remove it!',
+      },
+      {
+        selector: '.third-step',
+        content: 'Happy with your sections? Click next!',
+      }
+    ]
+
   return (
+    <TourProvider steps={steps} showBadge={false} showDots={false} disableInteraction={true}>
       <RouterProvider router={router} />
+    </TourProvider>
   )
 }

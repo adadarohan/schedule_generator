@@ -11,6 +11,7 @@
     "deploy": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive"
   },
   "dependencies": {
+    "@reactour/tour": "^3.6.1",
     "downshift": "^8.2.2",
     "material-symbols": "^0.13.0",
     "react": "^18.2.0",
