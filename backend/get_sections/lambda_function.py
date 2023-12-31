@@ -67,49 +67,35 @@ def update_sections (clas):
         except :
             end_date = None
 
-        meetings = []
-        for meeting in section_root.find("meetings").findall("meeting") :
+        meeting = section_root.find("meetings").find("meeting") 
 
-            try :
-                start_string = meeting.find("start").text # 09:00 AM
-                start_time = datetime.strptime(start_string, "%I:%M %p")
-            except:
-                start_time = None
+        try :
+            start_string = meeting.find("start").text # 09:00 AM
+            start_time = datetime.strptime(start_string, "%I:%M %p")
+        except:
+            start_time = None
 
-            try : 
-                end_string = meeting.find("end").text # 09:50 AM
-                end_time = datetime.strptime(end_string, "%I:%M %p")
-            except :
-                end_time = None
+        try : 
+            end_string = meeting.find("end").text # 09:50 AM
+            end_time = datetime.strptime(end_string, "%I:%M %p")
+        except :
+            end_time = None
 
-            instructors = []
-            for instructor in meeting.find("instructors").findall("instructor") :
-                instructors.append(instructor.text)
+        instructors = []
+        for instructor in meeting.find("instructors").findall("instructor") :
+            instructors.append(instructor.text)
 
-            try : 
-                type_code = meeting.find("type").attrib["code"]
-            except :
-                type_code = None
-            
-            try :
-                building_name = find_validate_xml(meeting, "buildingName")
-                coordinates = locations.find_one({"name": building_name}).get("coordinates", None)
-            except Exception as e :
-                print(f"Error finding coordinates for {building_name} with error {e} ")
-                coordinates = None
-
-            meetings.append({
-                'id': meeting.attrib["id"],
-                'type' : find_validate_xml(meeting, "type"),
-                'type_code' : type_code,
-                'start_time' : start_time,
-                'end_time' : end_time,
-                'days' : find_validate_xml(meeting, "daysOfTheWeek"),
-                'room_number' : find_validate_xml(meeting, "roomNumber"),
-                'building_name' : find_validate_xml(meeting, "buildingName"),
-                'coordinates' : coordinates,
-                'instructors' : instructors,
-            })
+        try : 
+            type_code = meeting.find("type").attrib["code"]
+        except :
+            type_code = None
+        
+        try :
+            building_name = find_validate_xml(meeting, "buildingName")
+            coordinates = locations.find_one({"name": building_name}).get("coordinates", None)
+        except Exception as e :
+            print(f"Error finding coordinates for {building_name} with error {e} ")
+            coordinates = None
 
         sections.append({
             'crn': section.attrib["id"],
@@ -122,7 +108,16 @@ def update_sections (clas):
             'section_text': section_text,
             'start_date': start_date,
             'end_date': end_date,
-            'meetings': meetings,
+            'id': meeting.attrib["id"],
+            'type' : find_validate_xml(meeting, "type"),
+            'type_code' : type_code,
+            'start_time' : start_time,
+            'end_time' : end_time,
+            'days' : find_validate_xml(meeting, "daysOfTheWeek"),
+            'room_number' : find_validate_xml(meeting, "roomNumber"),
+            'building_name' : find_validate_xml(meeting, "buildingName"),
+            'coordinates' : coordinates,
+            'instructors' : instructors,
         })
     
     if sections == [] :
@@ -157,3 +152,10 @@ def get_sections (code, number) :
 
 def lambda_handler(event, context):
     return get_sections(event['queryStringParameters']['code'], event['queryStringParameters']['number'])
+
+
+get_sections("ECE", "110")
+get_sections("ECE", "220")
+get_sections("PHYS", "212")
+get_sections("MATH", "241")
+get_sections("CWL", "207")

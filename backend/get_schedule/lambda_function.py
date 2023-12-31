@@ -4,7 +4,7 @@ import os
 import itertools
 import haversine as hs
 import json
-import datetime
+import time
 import math
 
 load_dotenv()
@@ -139,8 +139,9 @@ def generate_schedule_combinations(class_list, user_preferences):
 
     possible_schedules_length = math.prod([len(x) for x in un_duplicated_groups.values()])
 
-    if possible_schedules_length > 1_000_000:
-        raise ScheduleException("overflow")
+    print(possible_schedules_length)
+    # if possible_schedules_length > 1_000_000:
+    #     raise ScheduleException("overflow")
     
     possible_schedules = itertools.product(*un_duplicated_groups.values())
 
@@ -303,12 +304,14 @@ def get_schedule(user_preferences):
     """
     Returns the schedule for the user
     """
+    start = time.time()
+
     class_list = apply_hard_filters(user_preferences)
-    print('Applied hard filters')
+    print('Applied hard filters', time.time() - start)
     possible_schedules = generate_schedule_combinations(class_list, user_preferences)
-    print('Generated schedule combinations')
+    print('Generated schedule combinations', time.time() - start)
     sorted_schedules = sort_schedules(possible_schedules, user_preferences)
-    print('Sorted schedules')
+    print('Sorted schedules', time.time() - start)
     return sorted_schedules[:5]
 
 
@@ -330,3 +333,8 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps(str(e))
         }
+    
+
+user_prefs = {"classes": [{"code": "ECE", "number": "110", "crn_list": ["32463", "32460", "52912", "32470", "52914", "52910", "32466", "32461", "52913", "32456", "52911", "63640", "32459", "32464", "32471", "52909", "61723", "57693"]}, {"code": "ECE", "number": "220", "crn_list": ["61635", "61638", "61640", "61641", "61642", "61643", "64369", "61629", "63649", "63650"]}, {"code": "PHYS", "number": "212", "crn_list": ["38029", "38032", "57914", "56034", "58663", "51211", "58664", "53105", "38051", "38057", "38104", "38059", "58662", "57937", "38062",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "57963", "58985", "58987", "58988", "58978", "58979"]}, {"code": "MATH", "number": "241", "crn_list": ["50318", "46053", "46054", "46056", "46057", "46058", "48355", "46061", "46062", "46065", "46066", "46063", "46064", "59561", "58071", "46060", "46067", "46059", "52979", "46070", "46071", "46072", "46073", "47543", "67808", "50322", "55923", "55924", "55925", "55922", "55926", "56027", "56026", "55921", "46074"]}, {"code": "CWL", "number": "207", "crn_list": ["65011"]}], "pref_sections": ["52914", "63640", "32471", "61643", "61642", "38096", "38088", "50318"], "classes_1": ["ECE 110", "ECE 220", "PHYS 212", "MATH 241", "CWL 207"], "open_sections_only": False, "start_time": 10, "end_time": 21, "pref_time": 16, "lunch": {"start": 11, "end": 14, "duration": 1}, "max_distance": 800, "back_to_back": True}
+test_outputs = get_schedule(user_prefs)
