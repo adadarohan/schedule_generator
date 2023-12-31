@@ -9,7 +9,7 @@ import json
 load_dotenv()
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
-db = os.environ.get("MONGODB_DB")
+db = client[os.environ.get("MONGODB_DB")]
 
 classes = db["classes"]
 locations = db["locations"]
