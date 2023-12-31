@@ -9,7 +9,8 @@ import json
 load_dotenv()
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
-db = client["schedule"]
+db = os.environ.get("MONGODB_DB")
+
 classes = db["classes"]
 locations = db["locations"]
 
