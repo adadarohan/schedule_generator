@@ -2,10 +2,8 @@ import pymongo
 from dotenv import load_dotenv
 import os
 import itertools
-import haversine as hs
 import json
-import time
-import math
+from math import pi, sqrt, cos
 
 load_dotenv()
 
@@ -27,6 +25,10 @@ weights = {
 class ScheduleException(Exception):
     pass
 
+class ScheduleOverlapException(Exception):
+    # When a schedule is not possible because 2 classes overlap time-wise
+    pass
+
 def check_for_no_section(classes_to_take, open_sections_filter_applied):
     for clas in classes_to_take:
         if len(clas["sections"]) == 0:
@@ -34,7 +36,6 @@ def check_for_no_section(classes_to_take, open_sections_filter_applied):
                 raise ScheduleException(f"No open sections found for {clas['code']} {clas['number']} in your specified time range. Please try again with a different time range.")
             else:
                 raise ScheduleException(f"No sections found for {clas['code']} {clas['number']} in your specified time range. Please try again with a different time range.")
-
 
 def fetch_section_data(class_list):
     """
@@ -46,31 +47,28 @@ def fetch_section_data(class_list):
         class_["sections"] = []
         for section in clas_mongo_object["sections"]:
             if section["crn"] in class_["crn_list"]:
+
+                if section["type_code"] == "OLC":
+                    continue
+
                 section["class"] = {
                     "code": class_["code"],
                     "number": class_["number"]
                 }
-                # Drop online lecture sections
-                meeting_type_codes = [meeting["type_code"]
-                                      for meeting in section["meetings"]]
-                if ("OLC" in meeting_type_codes):
-                    continue
+                
                 class_["sections"].append(section)
 
     return class_list
-
-
 def is_preferred_time(section, start_time, end_time):
     earliest_meeting = start_time
     latest_meeting = end_time
 
-    for meeting in section["meetings"]:
-        if meeting['start_time'] is None or meeting['end_time'] is None:
-            continue
-        if meeting['start_time'].hour < earliest_meeting:
-            earliest_meeting = meeting['start_time'].hour
-        if meeting['end_time'].hour > latest_meeting:
-            latest_meeting = meeting['end_time'].hour
+    if section['start_time'] is None or section['end_time'] is None:
+        return True
+    if section['start_time'].hour < earliest_meeting:
+        earliest_meeting = section['start_time'].hour
+    if section['end_time'].hour > latest_meeting:
+        latest_meeting = section['end_time'].hour
 
     return earliest_meeting >= start_time and latest_meeting <= end_time
 
@@ -84,10 +82,8 @@ def delete_unpreferred_sections(class_list, start_time, end_time):
 def delete_closed_sections(class_list, open_sections_only):
     if open_sections_only:
         for clas in class_list:
-            clas["sections"] = [section for section in clas['sections']
-                                if section['enrollment_status'].lower() != 'closed']
+            clas["sections"] = [section for section in clas['sections'] if section['enrollment_status'].lower() != 'closed']
     return class_list
-
 
 def apply_hard_filters(user_preferences):
     class_list = fetch_section_data(user_preferences["classes"])
@@ -105,7 +101,7 @@ def remove_duplicates(grouped_sections, pref_sections):
     hash_list = set()
     new_list = []
     for section in grouped_sections:
-        section_hash = f"{section['meetings'][0]['coordinates']}_{section['meetings'][0]['start_time']}_{section['meetings'][0]['end_time']}_{section['meetings'][0]['days']}"
+        section_hash = f"{section['coordinates']}_{section['start_time']}_{section['end_time']}_{section['days']}"
         if section_hash not in hash_list:
             hash_list.add(section_hash)
             new_list.append(section)
@@ -125,25 +121,15 @@ def generate_schedule_combinations(class_list, user_preferences):
     for clas in class_list:
         base_group_name = f"{clas['code']}_{clas['number']}_"
         for section in clas['sections']:
-            list_of_meeting_types = [meeting['type_code']
-                                     for meeting in section['meetings']]
-            group_key = base_group_name + \
-                "_".join([str(x) for x in list_of_meeting_types])
+            group_key = base_group_name + "_" + section['type_code']
             groups[group_key] = groups.get(group_key, []) + [section]
 
     un_duplicated_groups = {}
-
 
     # Remove groups with section which have the same days, times, and locations
     for key, value in groups.items():
         un_duplicated_groups[key] = remove_duplicates(value, user_preferences["pref_sections"])
 
-    possible_schedules_length = math.prod([len(x) for x in un_duplicated_groups.values()])
-
-    print(possible_schedules_length)
-    # if possible_schedules_length > 1_000_000:
-    #     raise ScheduleException("overflow")
-    
     possible_schedules = itertools.product(*un_duplicated_groups.values())
 
     return possible_schedules
@@ -159,24 +145,36 @@ def convert_to_time_based(list_of_sections):
     }
 
     for section in list_of_sections:
-        for meeting in section['meetings']:
+        if section['start_time'] is None or section['end_time'] is None:
+            continue
 
-            if meeting['start_time'] is None or meeting['end_time'] is None:
-                continue
+        start_hour = section['start_time'].hour
+        end_hour = section['end_time'].hour
 
-            start_hour = meeting['start_time'].hour
-            end_hour = meeting['end_time'].hour
-
-            for day in list(meeting['days'].strip()):
-                for hour in range(start_hour, end_hour+1):
-                    section_copy = section
-                    section_copy['meetings'] = [meeting]
-                    if schedule_slots[day][hour] is not None:
-                        return None
-                    schedule_slots[day][hour] = section_copy
+        for day in section['days'].strip():
+            for hour in range(start_hour, end_hour+1):
+                if schedule_slots[day][hour] is not None:
+                    raise ScheduleOverlapException(f"Schedule overlap detected for {section['class']['code']} {section['class']['number']} and {schedule_slots[day][hour]['class']['code']} {schedule_slots[day][hour]['class']['number']}")
+                schedule_slots[day][hour] = section
 
     return schedule_slots
 
+
+def pythagorian_distance(coords1, coords2):
+    lat1 = coords1[0]  
+    lon1 = coords1[1]  
+    lat2 = coords2[0] 
+    lon2 = coords1[1] 
+
+    avgLatDeg = (lat1 + lat2) / 2
+    avgLat = avgLatDeg * (pi/180)
+
+    d_ew = (lon2 - lon1) * cos(avgLat)
+    d_ns = (lat2 - lat1)
+    approxDegreesSq = (d_ew * d_ew) + (d_ns * d_ns)
+    d_degrees = sqrt(approxDegreesSq)
+    EarthAvgMeterPerGreatCircleDegree = (6371000 * 2 * pi) / 360
+    return d_degrees * EarthAvgMeterPerGreatCircleDegree
 
 def list_of_successive_distances(schedule):
 
@@ -184,12 +182,13 @@ def list_of_successive_distances(schedule):
     for day in schedule:
         for hour in range(0, 23):
             if schedule[day][hour] is not None and schedule[day][hour + 1] is not None:
-                coords1 = schedule[day][hour]['meetings'][0]['coordinates']
-                coords2 = schedule[day][hour + 1]['meetings'][0]['coordinates']
+                coords1 = schedule[day][hour]['coordinates']
+                coords2 = schedule[day][hour + 1]['coordinates']
                 if coords1 is not None and coords2 is not None:
-                    list_of_distances.append(hs.haversine(coords1, coords2, unit=hs.Unit.METERS))
+                    list_of_distances.append(pythagorian_distance(coords1, coords2))
 
     return [x for x in list_of_distances if x != 0.0]
+
 
 
 def distance_score(list_of_sections, max_distance) -> float:
@@ -269,8 +268,6 @@ def lunch_score(list_of_sections, lunch):
 
 def compute_schedule_score(list_of_sections, user_preferences) -> float:
     schedule = convert_to_time_based(list_of_sections)
-    if schedule is None:
-        return None, None
     
     if user_preferences['max_distance'] > 10_000:
         ds = 0
@@ -283,11 +280,12 @@ def compute_schedule_score(list_of_sections, user_preferences) -> float:
     ls = lunch_score(schedule, user_preferences["lunch"])
     return (ds + btb + ts + ss + ls), schedule
 
+
 def sort_schedules(possible_schedules, user_preferences):
     sorted_schedules = []
     for schedule in possible_schedules:
-        score, time_schedule = compute_schedule_score(schedule, user_preferences)
-        if score is not None:
+        try :
+            score, time_schedule = compute_schedule_score(schedule, user_preferences)
             sorted_schedules.append(
                 {
                     "time_schedule": time_schedule,
@@ -295,9 +293,12 @@ def sort_schedules(possible_schedules, user_preferences):
                     "score": score
                 }
             )
+        except ScheduleOverlapException:
+            continue
     if len(sorted_schedules) == 0:
         raise ScheduleException("No possible schedules found. Please try again with different preferences.")
     sorted_schedules.sort(key=lambda x: x["score"], reverse=True)
+    print(f"Number of possible schedules: {len(sorted_schedules)}")
     return sorted_schedules
 
 
@@ -305,14 +306,13 @@ def get_schedule(user_preferences):
     """
     Returns the schedule for the user
     """
-    start = time.time()
 
     class_list = apply_hard_filters(user_preferences)
-    print('Applied hard filters', time.time() - start)
+    print('Applied hard filters')
     possible_schedules = generate_schedule_combinations(class_list, user_preferences)
-    print('Generated schedule combinations', time.time() - start)
+    print('Generated schedule combinations')
     sorted_schedules = sort_schedules(possible_schedules, user_preferences)
-    print('Sorted schedules', time.time() - start)
+    print('Sorted schedules')
     return sorted_schedules[:5]
 
 

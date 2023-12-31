@@ -131,7 +131,6 @@ def update_sections (clas):
 def get_sections (code, number) :
     print(f"Getting sections for {code} {number}")
     selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'spring'})
-    print(selected_class)
     if selected_class is None :
         print("Class not found")
         return None
@@ -153,10 +152,3 @@ def get_sections (code, number) :
 
 def lambda_handler(event, context):
     return get_sections(event['queryStringParameters']['code'], event['queryStringParameters']['number'])
-
-
-get_sections("ECE", "110")
-get_sections("ECE", "220")
-get_sections("PHYS", "212")
-get_sections("MATH", "241")
-get_sections("CWL", "207")
