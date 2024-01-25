@@ -169,8 +169,7 @@ def get_sections (code, number) :
     if selected_class is None :
         print("Class not found")
         return None
-    #elif 'last_updated' not in selected_class :
-    elif True:
+    elif 'last_updated' not in selected_class:
         print("Updating sections")
         try : 
             return update_sections(selected_class)

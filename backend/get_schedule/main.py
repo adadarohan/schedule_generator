@@ -111,7 +111,7 @@ def get_schedule(user_preferences):
 
 
 def lambda_handler(event, context):
-    print(event["queryStringParameters"]['data'])
+    print("Data: ", event["queryStringParameters"]['data'])
 
     try:
         user_prefs = json.loads(event["queryStringParameters"]['data'])

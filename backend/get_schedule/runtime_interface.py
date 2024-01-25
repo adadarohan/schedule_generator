@@ -39,7 +39,7 @@ class RuntimeInterface(object):
         url = self.error_url.format(request_id)
         print(error)
         error_response = {
-            "errorMessage" : error.message,
+            "errorMessage" : error,
             "errorType" : type(error)
         }
         requests.post(url, data=json.dumps(error_response))
