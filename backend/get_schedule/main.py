@@ -4,8 +4,8 @@ import os
 import itertools
 import json
 
-from section_filters import fetch_section_data, delete_unpreferred_sections, delete_closed_sections, check_for_no_section
-from schedule_score import compute_schedule_score
+from section_filters import fetch_section_data, delete_unpreferred_sections, delete_closed_sections, check_for_no_section, ScheduleException
+from schedule_score import compute_schedule_score, ScheduleOverlapException
 
 load_dotenv()
 
@@ -16,13 +16,6 @@ db = client[os.environ.get("MONGODB_DB")]
 classes = db["classes"]
 locations = db["locations"]
 
-
-class ScheduleException(Exception):
-    pass
-
-class ScheduleOverlapException(Exception):
-    # When a schedule is not possible because 2 classes overlap time-wise
-    pass
 
 def apply_hard_filters(user_preferences):
     class_list = fetch_section_data(user_preferences["classes"])
@@ -135,3 +128,5 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps(str(e))
         }
+
+print("initialization complete!!")
