@@ -107,8 +107,8 @@ function Step3(props) {
               <div key={index} className="contents hover:font-medium">
                 <p >{section.section_number}</p>
                 <p >{section.crn}</p>
-                <p className="col-span-2" >{section.meetings[0].type}</p>
-                <p className="col-span-2">{section.meetings[0].instructors[0]}</p>
+                <p className="col-span-2" >{section.type}</p>
+                <p className="col-span-2">{section.instructor}</p>
                 <p className="col-span-4">{section.section_text}</p>
                 
                 {

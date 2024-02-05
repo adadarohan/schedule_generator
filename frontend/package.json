@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build_dev": "vite build --mode dev",
+    "build_dev": "vite build --mode development",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "deploy_prod": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive",

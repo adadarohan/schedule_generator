@@ -22,6 +22,8 @@ import { TourProvider } from '@reactour/tour'
 
 export default function App () {
 
+  console.log(import.meta.env)
+
   ReactGA.initialize("G-ZVFH4MVCZ8");
 
   let [userPrefs, setUserPrefs] = useState({
