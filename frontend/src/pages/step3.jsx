@@ -23,7 +23,7 @@ function Step3(props) {
   function getSections(code, number, first_time=false) {
     console.log("Getting sections for " + code + " " + number)
     setIsLoading(true)
-    fetch("https://cdb4rxbcs5qwph6x3oju4nkjrq0xzupa.lambda-url.us-east-2.on.aws/?code=" + code + "&number=" + number)
+    fetch(import.meta.env.VITE_GET_SECTION_URL + "?code=" + code + "&number=" + number)
     .then(response => response.json())
     .then(data => {
       setIsLoading(false)

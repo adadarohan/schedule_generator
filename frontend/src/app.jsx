@@ -21,7 +21,7 @@ import Overflow from "./pages/overflow";
 import { TourProvider } from '@reactour/tour'
 
 export default function App () {
-  
+
   ReactGA.initialize("G-ZVFH4MVCZ8");
 
   let [userPrefs, setUserPrefs] = useState({
@@ -42,7 +42,7 @@ export default function App () {
         path : "/form/1",
         element: <Step1 setUserPrefs={setUserPrefs} userPrefs={userPrefs} />,
         loader : async () => {
-          const response = await fetch("https://mkgfanuvq2vklflixl2nxqxlyy0mjpfv.lambda-url.us-east-2.on.aws/")
+          const response = await fetch(import.meta.env.VITE_GET_CLASSES_URL)
           return await response.json()
         },
         errorElement: <Error/>

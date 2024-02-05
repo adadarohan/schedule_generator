@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build_dev": "vite build --mode dev",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive"
+    "deploy_prod": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive",
+    "deploy_dev": "npm run build_dev &&  aws s3 cp ./dist s3://dev.illiniclassscheduler.com --recursive"
+
   },
   "dependencies": {
     "@reactour/tour": "^3.6.1",
