@@ -121,6 +121,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
 .venv
 env/
 venv/
@@ -162,8 +163,8 @@ package/
 #.idea/
 
 .vscode/
-.zip
-my_deployment_package.zip
+*.zip
+backend/get_schedule/pypy3.10-v7.3.14-linux64
 
 # Logs
 logs

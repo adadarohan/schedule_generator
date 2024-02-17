@@ -9,7 +9,7 @@ function Results(props) {
   }
 
 
-  let schedule_options = [0, 1, 2, 3, 4]
+  let schedule_options = [...Array(props.schedules.length)].map((x,i)=>i)
   let currentSchedule = props.schedules[props.chosenSchedule]
 
   const timesOfDay = {
@@ -77,7 +77,7 @@ function Results(props) {
         jsx.push(
           <div key={i} className="h-full flex flex-col justify-center items-center rounded-2xl bg-transparent border-black border-2 px-3 mx-2"  style={{"gridRow":"span " + length + " / span " + length}}>
             <p className="text-2xl text-center">{class_.class.code} {class_.class.number}</p>
-            <p className="text-xl text-center">{class_.meetings[0].type}</p>
+            <p className="text-xl text-center">{class_.type}</p>
           </div>
         )
 

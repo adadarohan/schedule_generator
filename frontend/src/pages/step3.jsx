@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTour } from '@reactour/tour'
+import {RMPPill} from "./components/rmp_pill"
 
 function Step3(props) {
   const { setIsOpen } = useTour()
@@ -23,9 +24,13 @@ function Step3(props) {
   function getSections(code, number, first_time=false) {
     console.log("Getting sections for " + code + " " + number)
     setIsLoading(true)
-    fetch("https://cdb4rxbcs5qwph6x3oju4nkjrq0xzupa.lambda-url.us-east-2.on.aws/?code=" + code + "&number=" + number)
-    .then(response => response.json())
-    .then(data => {
+    fetch(import.meta.env.VITE_GET_SECTION_URL + "?code=" + code + "&number=" + number)
+    .then(response => {
+        if (!response.ok) {
+          navigate("/error?error=" + response.status);
+        }
+        return response.json();
+    }).then(data => {
       setIsLoading(false)
       setCurrentClassSections(data)
       if (first_time) {
@@ -107,8 +112,16 @@ function Step3(props) {
               <div key={index} className="contents hover:font-medium">
                 <p >{section.section_number}</p>
                 <p >{section.crn}</p>
-                <p className="col-span-2" >{section.meetings[0].type}</p>
-                <p className="col-span-2">{section.meetings[0].instructors[0]}</p>
+                <p className="col-span-2" >{section.type}</p>
+                <p className="col-span-2">
+                  {section.instructor}
+                  {// If the instructor has a rate my professor score, display it
+                  ('avg_rating' in section.rate_my_professor) ?
+                  <RMPPill rating={section.rate_my_professor.avg_rating} link={section.rate_my_professor.rmp_link}></RMPPill>
+                  :
+                  null
+                  }
+                </p>
                 <p className="col-span-4">{section.section_text}</p>
                 
                 {
