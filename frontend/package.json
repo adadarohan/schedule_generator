@@ -11,7 +11,6 @@
     "preview": "vite preview",
     "deploy_prod": "npm run build &&  aws s3 cp ./dist s3://illiniclassscheduler.com --recursive",
     "deploy_dev": "npm run build_dev &&  aws s3 cp ./dist s3://dev.illiniclassscheduler.com --recursive"
-
   },
   "dependencies": {
     "@reactour/tour": "^3.6.1",

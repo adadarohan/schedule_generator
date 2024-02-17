@@ -17,13 +17,11 @@ import Submit from "./pages/submit";
 import Results from "./pages/results";
 import Export from "./pages/export";
 import Error from "./pages/error";
-import Overflow from "./pages/overflow";
 import { TourProvider } from '@reactour/tour'
 
 export default function App () {
 
-  console.log(import.meta.env)
-
+  // Initialise Google Analytics  
   ReactGA.initialize("G-ZVFH4MVCZ8");
 
   let [userPrefs, setUserPrefs] = useState({
@@ -100,11 +98,6 @@ export default function App () {
           path: "/export",
           element: <Export schedules={schedules} chosenSchedule={chosenSchedule}/>,
           errorElement: <Error/>
-      },
-      {
-          path: "/overflow",
-          element: <Overflow/>,
-          errorElement: <Error/>
       }
     ]);
 
@@ -125,8 +118,9 @@ export default function App () {
     ]
 
   return (
-    <TourProvider steps={steps} showBadge={false} showDots={false} disableInteraction={true}>
-      <RouterProvider router={router} />
-    </TourProvider>
+      <TourProvider steps={steps} showBadge={false} showDots={false} disableInteraction={true}>
+        <RouterProvider router={router} />
+      </TourProvider>
+
   )
 }

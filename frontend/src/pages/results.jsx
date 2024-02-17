@@ -9,7 +9,7 @@ function Results(props) {
   }
 
 
-  let schedule_options = [0, 1, 2, 3, 4]
+  let schedule_options = [...Array(props.schedules.length)].map((x,i)=>i)
   let currentSchedule = props.schedules[props.chosenSchedule]
 
   const timesOfDay = {

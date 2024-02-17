@@ -24,8 +24,12 @@ function Step3(props) {
     console.log("Getting sections for " + code + " " + number)
     setIsLoading(true)
     fetch(import.meta.env.VITE_GET_SECTION_URL + "?code=" + code + "&number=" + number)
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+        if (!response.ok) {
+          navigate("/error?error=" + response.status);
+        }
+        return response.json();
+    }).then(data => {
       setIsLoading(false)
       setCurrentClassSections(data)
       if (first_time) {
