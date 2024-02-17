@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTour } from '@reactour/tour'
+import {RMPPill} from "./components/rmp_pill"
 
 function Step3(props) {
   const { setIsOpen } = useTour()
@@ -112,7 +113,15 @@ function Step3(props) {
                 <p >{section.section_number}</p>
                 <p >{section.crn}</p>
                 <p className="col-span-2" >{section.type}</p>
-                <p className="col-span-2">{section.instructor}</p>
+                <p className="col-span-2">
+                  {section.instructor}
+                  {// If the instructor has a rate my professor score, display it
+                  ('avg_rating' in section.rate_my_professor) ?
+                  <RMPPill rating={section.rate_my_professor.avg_rating} link={section.rate_my_professor.rmp_link}></RMPPill>
+                  :
+                  null
+                  }
+                </p>
                 <p className="col-span-4">{section.section_text}</p>
                 
                 {
