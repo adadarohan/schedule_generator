@@ -44,6 +44,7 @@ function ComboBoxExample(props) {
           <input
           className="text-2xl sm:text-3xl bg-transparent outline-none placeholder:text-slate-600 w-32 sm:w-36"
           type="text"
+          autoFocus
           placeholder="search"
           {...getInputProps()}
           />
