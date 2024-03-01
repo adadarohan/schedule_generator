@@ -10,6 +10,8 @@ function Step1(props) {
     const [showPlus, setShowPlus] = useState(false)
 
     const handleHidePlus = () => setShowPlus(false)
+    // TODO : Add to handleHidePlus to make the user's cursor focus on the input in the <Searchbox> element.
+    // This is so that when they click on the plus button, they can start typing straight away without needing to click again on the text input box.
 
     useEffect(() => {
       props.setUserPrefs({
