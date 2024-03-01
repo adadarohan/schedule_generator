@@ -5,13 +5,15 @@ import ClassPill from "./components/class_pill";
 
 function Step1(props) {
     let classList = useLoaderData()
+    let searchboxRef = useState(null)
 
     const [chosen_classes, setChosenClasses] = useState([])
     const [showPlus, setShowPlus] = useState(false)
 
-    const handleHidePlus = () => setShowPlus(false)
-    // TODO : Add to handleHidePlus to make the user's cursor focus on the input in the <Searchbox> element.
-    // This is so that when they click on the plus button, they can start typing straight away without needing to click again on the text input box.
+    const handleHidePlus = () => {
+      setShowPlus(false)
+      searchboxRef.current.focus()
+    }
 
     useEffect(() => {
       props.setUserPrefs({
@@ -41,7 +43,7 @@ function Step1(props) {
 
             :
 
-            <Searchbox chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} showPlus={showPlus} setShowPlus={setShowPlus} classList={classList}/>
+            <Searchbox ref={searchboxRef} chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} showPlus={showPlus} setShowPlus={setShowPlus} classList={classList}/>
           }
         </div>
   
