@@ -27,11 +27,11 @@ function Home() {
         </div>
 
         <div onClick={handleNext} className="cursor-pointer sm:pl-10 pt-20 transition hover:-translate-y-2 flex flex-row sm:justify-start duration-300 justify-center">
-          <h5 className="text-3xl sm:text-4xl">get started</h5>
+          <p className="text-3xl sm:text-4xl">get started</p>
           <span className="material-symbols-outlined text-4xl sm:text-5xl">chevron_right</span>
         </div>
 
-        <p className=" text-lg sm:text-xl fixed bottom-0 left-0 pb-7 px-10 sm:pl-10 text-center sm:text-left">Created by <b>Rohan Kapur</b> using React & Python </p>
+        <p className=" text-lg sm:text-xl fixed bottom-0 left-0 pb-7 px-10 sm:pl-10 text-center sm:text-left">Created by <b>Rohan Kapur</b> </p>
       </div>
     )
   } else {
