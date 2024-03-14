@@ -71,12 +71,13 @@ def sort_schedules(possible_schedules, user_preferences):
     sorted_schedules = []
     for schedule in possible_schedules:
         try :
-            score, time_schedule = compute_schedule_score(schedule, user_preferences)
+            score, time_schedule, score_dict = compute_schedule_score(schedule, user_preferences)
             sorted_schedules.append(
                 {
                     "time_schedule": time_schedule,
                     "schedule": schedule,
-                    "score": score
+                    "score": score,
+                    "score_breakdown": score_dict
                 }
             )
         except ScheduleOverlapException:
@@ -87,14 +88,6 @@ def sort_schedules(possible_schedules, user_preferences):
     print(f"Number of possible schedules: {len(sorted_schedules)}")
     return sorted_schedules
 
-
-def is_full_semester_schedule(class_list):
-    """
-    Return true if 
-    - every class in the list is a full semester class
-    - all the half semester classes are in the same half semester
-    """
-    half_semester_classes = []
 
 def get_schedule(user_preferences):
     """

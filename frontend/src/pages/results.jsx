@@ -136,7 +136,7 @@ function Results(props) {
 
       
       <div onClick={handleNext} className="fixed bottom-0 right-0 pb-5 sm:pb-8 pr-8 sm:pr-16  transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max cursor-pointer">
-          <h5 className="text-4xl">next</h5>
+          <h5 className="text-3xl">select option</h5>
           <span className="material-symbols-outlined text-4xl">chevron_right</span>
       </div>
       

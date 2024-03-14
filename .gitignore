@@ -164,7 +164,7 @@ package/
 
 .vscode/
 *.zip
-backend/get_schedule/pypy3.10-v7.3.14-linux64
+*pypy*
 
 # Logs
 logs

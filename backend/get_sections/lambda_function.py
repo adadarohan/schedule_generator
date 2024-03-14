@@ -116,7 +116,7 @@ def update_sections (clas):
             print(f"Failed to get instructor with error {e}")
 
         rmp_info = {}
-        if instructor is not None :
+        if instructor is not None and find_validate_xml(meeting, "type") != None and "Lecture" in find_validate_xml(meeting, "type"):
             rmp_info = get_rmp_info(instructor_ele.attrib.get('firstName',''), instructor_ele.attrib.get('lastName',''), clas['code'] )
         
         try : 

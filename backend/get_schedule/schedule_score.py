@@ -68,25 +68,22 @@ def list_of_successive_distances(schedule):
 
 
 
-def distance_score(list_of_sections, max_distance) -> float:
+def distance_score(list_of_sections, max_distance) -> list:
     # Returns a score between -distance_weight and distance_weight based on how far apart the classes are
     list_of_distances = list_of_successive_distances(list_of_sections)
 
     if len(list_of_distances) == 0:
-        return 0
+        return weights["distance"], 1
 
     mean_distance = sum(list_of_distances) / len(list_of_distances)
 
     # Find the distance score
-    if mean_distance > max_distance:
-        percent_over = (mean_distance - max_distance) / max_distance
-        return -(percent_over * weights["distance"])
-    elif mean_distance < max_distance:
-        percent_under = (max_distance - mean_distance) / max_distance
-        return percent_under * weights["distance"]
-    else:
-        return 0
 
+    percent_under = (max_distance - mean_distance) / max_distance
+    weighted_percent = percent_under * weights["distance"]
+
+    return weighted_percent, percent_under
+   
 
 def back_to_back_score(list_of_sections, back_to_back) -> float:
     back_to_back_count = 0
@@ -102,9 +99,9 @@ def back_to_back_score(list_of_sections, back_to_back) -> float:
     if total_count == 0:
         return 0
     elif back_to_back:
-        return (back_to_back_count / total_count) * weights["back_to_back"]
+        return (back_to_back_count / total_count) * weights["back_to_back"] , back_to_back_count / total_count
     else:
-        return (-back_to_back_count / total_count) * weights["back_to_back"]
+        return (-back_to_back_count / total_count) * weights["back_to_back"] , 1 - (back_to_back_count / total_count)
 
 
 def time_score(list_of_sections, pref_time):
@@ -119,7 +116,7 @@ def time_score(list_of_sections, pref_time):
         return 0
     else:
         mean_time = sum(time_list) / len(time_list)
-        return (1 - (abs(mean_time - pref_time) / pref_time)) * weights["time"]
+        return (1 - (abs(mean_time - pref_time) / pref_time)) * weights["time"], (1 - (abs(mean_time - pref_time) / pref_time))
 
 
 def section_score(list_of_sections, pref_sections):
@@ -129,11 +126,15 @@ def section_score(list_of_sections, pref_sections):
             if list_of_sections[day][hour] is not None and list_of_sections[day][hour]['crn'] in pref_sections:
                 section_count += 1
 
-    return section_count * weights["section"]
+    dist_percent = 0
+    if len(pref_sections) != 0:
+        dist_percent = section_count / len(pref_sections)
+
+    return section_count * weights["section"], dist_percent
 
 
 def lunch_score(list_of_sections, lunch):
-    lunch_count = 0
+    lunch_count = 0 
     for day in list_of_sections:
         for hour in range(0, 23):
             if list_of_sections[day][hour] is None and hour >= lunch['start'] and hour < lunch['end']:
@@ -141,19 +142,31 @@ def lunch_score(list_of_sections, lunch):
                 if all(duration_hours):
                     lunch_count += 1
                     break
-    return (lunch_count - 5) * weights["lunch"]
+    return (lunch_count - 5) * weights["lunch"], lunch_count / 5
 
 def compute_schedule_score(list_of_sections, user_preferences) -> float:
     schedule = convert_to_time_based(list_of_sections)
     
-    if user_preferences['max_distance'] > 10_000:
-        ds = 0
-    else :
-        ds = distance_score(schedule, user_preferences["max_distance"])
 
-    btb = back_to_back_score(schedule, user_preferences["back_to_back"])
-    ts = time_score(schedule, user_preferences["pref_time"])
-    ss = section_score(schedule, user_preferences["pref_sections"])
-    ls = lunch_score(schedule, user_preferences["lunch"])
-    return (ds + btb + ts + ss + ls), schedule
+    if user_preferences['max_distance'] > 10_000:
+        ds = weights["distance"]
+        uwds = 1
+    else :
+        ds, uwds = distance_score(schedule, user_preferences["max_distance"])
+
+    btb, uwbtb = back_to_back_score(schedule, user_preferences["back_to_back"])
+    ts, uwts = time_score(schedule, user_preferences["pref_time"])
+    ss, uwss= section_score(schedule, user_preferences["pref_sections"])
+    ls, uwls = lunch_score(schedule, user_preferences["lunch"])
+
+    weighted_score = ds + btb + ts + ss + ls
+
+    score_dict = {
+        "distance_score":uwds,
+        "back_to_back_score": uwbtb,
+        "time_score": uwts,
+        "section_score": uwss,
+        "lunch_score": uwls
+    }
+    return weighted_score, schedule, score_dict
 
