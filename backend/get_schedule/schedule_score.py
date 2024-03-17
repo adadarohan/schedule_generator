@@ -126,7 +126,7 @@ def section_score(list_of_sections, pref_sections):
             if list_of_sections[day][hour] is not None and list_of_sections[day][hour]['crn'] in pref_sections:
                 section_count += 1
 
-    dist_percent = 0
+    dist_percent = 1
     if len(pref_sections) != 0:
         dist_percent = section_count / len(pref_sections)
 

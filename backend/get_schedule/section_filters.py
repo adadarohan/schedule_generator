@@ -21,7 +21,7 @@ def fetch_section_data(class_list):
     """
     for class_ in class_list:
         clas_mongo_object = classes.find_one({"code": class_["code"], "number": class_[
-                                             "number"], "year": 2024, "semester": "spring"})
+                                             "number"], "year": 2024, "semester": "fall"})
         class_["sections"] = []
         for section in clas_mongo_object["sections"]:
             if section["crn"] in class_["crn_list"]:

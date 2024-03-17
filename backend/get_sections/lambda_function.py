@@ -31,7 +31,7 @@ def get_rmp_info(first_initial, last_name, subject_code) :
     else :
         print("More than one possible prof")
         # Get full names of all subjects
-        resp = requests.get("https://courses.illinois.edu/cisapp/explorer/schedule/2024/spring.xml", timeout=10)
+        resp = requests.get("https://courses.illinois.edu/cisapp/explorer/schedule/2024/fall.xml", timeout=10)
         if resp.status_code == 404 :
             raise Exception("Error Link not found: full class list")
         if resp.status_code != 200 :
@@ -165,7 +165,7 @@ def update_sections (clas):
 
 def get_sections (code, number) :
     print(f"Getting sections for {code} {number}")
-    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'spring'})
+    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'fall'})
     if selected_class is None :
         print("Class not found")
         return None
