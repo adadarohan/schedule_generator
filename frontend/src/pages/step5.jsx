@@ -26,8 +26,8 @@ function Step5(props) {
   const navigate = useNavigate()
 
   function handleNext() {
-    if (lunchDuration < 1 || lunchDuration > 3) {
-      alert("Lunch duration must be between 1 and 3 hours")
+    if (lunchDuration > 3) {
+      alert("Lunch duration must be 3 hours at most")
       return
     }
 
@@ -37,7 +37,7 @@ function Step5(props) {
     }
 
     if ( startTime + parseInt(lunchDuration) > endTime) {
-      alert("Lunch duration is too long")
+      alert("Lunch duration + Start time is greater than end time.")
       return
     }
 
