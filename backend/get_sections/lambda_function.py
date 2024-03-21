@@ -5,13 +5,51 @@ import requests
 from datetime import datetime
 import xml.etree.ElementTree as ET  # for parsing XML
 import json
+from thefuzz import fuzz
 
 load_dotenv()
 mongodb_uri = os.environ.get("MONGODB_URI")
 client = pymongo.MongoClient(mongodb_uri)
-db = client["schedule"]
+db = client[os.environ.get("MONGODB_DB")]
+
 classes = db["classes"]
 locations = db["locations"]
+professors = db["professors"]
+
+def get_rmp_info(first_initial, last_name, subject_code) :
+    query = {
+        'first_name' : {'$regex' : f"^{first_initial}", '$options' : "i"}, 
+        'last_name' : {'$regex' : last_name, "$options" : "i"}     
+    }
+
+    possible_profs = list(professors.find(query))
+
+    if len(possible_profs) == 0:
+        return {}
+    elif len(possible_profs) == 1 :
+        return possible_profs[0]
+    else :
+        print("More than one possible prof")
+        # Get full names of all subjects
+        resp = requests.get("https://courses.illinois.edu/cisapp/explorer/schedule/2024/fall.xml", timeout=10)
+        if resp.status_code == 404 :
+            raise Exception("Error Link not found: full class list")
+        if resp.status_code != 200 :
+            raise Exception(f"Error: {resp.status_code} for full class list")
+        
+        subjects = ET.fromstring(resp.content).find('subjects')
+        subject_dict = {ele.attrib['id'] : ele.text for ele in subjects.findall("subject")  }
+        subject_name = subject_dict.get(subject_code, '')
+
+        likely_profs = []
+        for prof in possible_profs:
+            if fuzz.token_sort_ratio(prof['department'], subject_name) > 80:
+                likely_profs.append(prof)
+
+        if len(likely_profs) == 1:
+            return likely_profs[0]
+        else : 
+            return {}
 
 def find_validate_xml (base, search) : 
     try :
@@ -21,7 +59,7 @@ def find_validate_xml (base, search) :
     
 def update_sections (clas):
 
-    resp = requests.get(clas["api_link"], timeout=10)
+    resp = requests.get(clas["api_link"] + "?mode=cascade", timeout=10)
     if resp.status_code == 404 :
         print("Error Link not found: " + clas["name"])
         raise Exception("Error Link not found: " + clas["name"])
@@ -33,20 +71,7 @@ def update_sections (clas):
     clas_root = ET.fromstring(resp.content)
     sections = []
 
-    for section in clas_root.find("sections").findall("section") :
-        resp = requests.get(section.attrib["href"], timeout=10)
-        if resp.status_code == 404 :
-            print("Error Link not found: " + section.attrib["href"])
-            continue
-        if resp.status_code != 200 :
-            print("Error: " + section.attrib["href"])
-            continue
-            
-        try :
-            section_root = ET.fromstring(resp.content)
-        except :
-            print("Error parsing XML: " + section["crn"])
-            continue
+    for section_root in clas_root.find("detailedSections").findall("detailedSection") :
         
         section_number = find_validate_xml(section_root, "sectionNumber")
         status_code = find_validate_xml(section_root, "statusCode")
@@ -67,53 +92,49 @@ def update_sections (clas):
         except :
             end_date = None
 
-        meetings = []
-        for meeting in section_root.find("meetings").findall("meeting") :
+        meeting = section_root.find("meetings").find("meeting") 
 
-            try :
-                start_string = meeting.find("start").text # 09:00 AM
-                start_time = datetime.strptime(start_string, "%I:%M %p")
-            except:
-                start_time = None
+        try :
+            start_string = meeting.find("start").text # 09:00 AM
+            start_time = datetime.strptime(start_string, "%I:%M %p")
+        except:
+            start_time = None
 
-            try : 
-                end_string = meeting.find("end").text # 09:50 AM
-                end_time = datetime.strptime(end_string, "%I:%M %p")
-            except :
-                end_time = None
+        try : 
+            end_string = meeting.find("end").text # 09:50 AM
+            end_time = datetime.strptime(end_string, "%I:%M %p")
+        except :
+            end_time = None
 
-            instructors = []
-            for instructor in meeting.find("instructors").findall("instructor") :
-                instructors.append(instructor.text)
+        try :
+            instructor_ele = meeting.find('instructors').find('instructor')
+            instructor = None
+            if instructor_ele is not None:
+                instructor = instructor_ele.text
+        except Exception as e :
+            instructor = None
+            print(f"Failed to get instructor with error {e}")
 
-            try : 
-                type_code = meeting.find("type").attrib["code"]
-            except :
-                type_code = None
-            
-            try :
-                building_name = find_validate_xml(meeting, "buildingName")
+        rmp_info = {}
+        if instructor is not None and find_validate_xml(meeting, "type") != None and "Lecture" in find_validate_xml(meeting, "type"):
+            rmp_info = get_rmp_info(instructor_ele.attrib.get('firstName',''), instructor_ele.attrib.get('lastName',''), clas['code'] )
+        
+        try : 
+            type_code = meeting.find("type").attrib["code"]
+        except :
+            type_code = None
+        
+        try :
+            building_name = find_validate_xml(meeting, "buildingName")
+            coordinates = None
+            if building_name is not None :
                 coordinates = locations.find_one({"name": building_name}).get("coordinates", None)
-            except Exception as e :
-                print(f"Error finding coordinates for {building_name} with error {e} ")
-                coordinates = None
-
-            meetings.append({
-                'id': meeting.attrib["id"],
-                'type' : find_validate_xml(meeting, "type"),
-                'type_code' : type_code,
-                'start_time' : start_time,
-                'end_time' : end_time,
-                'days' : find_validate_xml(meeting, "daysOfTheWeek"),
-                'room_number' : find_validate_xml(meeting, "roomNumber"),
-                'building_name' : find_validate_xml(meeting, "buildingName"),
-                'coordinates' : coordinates,
-                'instructors' : instructors,
-            })
+        except Exception as e :
+            print(f"Error finding coordinates for {building_name} with error {e} ")
+            coordinates = None
 
         sections.append({
-            'crn': section.attrib["id"],
-            'api_link': section.attrib["href"],
+            'crn': section_root.attrib["id"],
             'section_number': section_number, 
             'status_code': status_code,
             'part_of_term': part_of_term,
@@ -122,7 +143,17 @@ def update_sections (clas):
             'section_text': section_text,
             'start_date': start_date,
             'end_date': end_date,
-            'meetings': meetings,
+            'id': meeting.attrib["id"],
+            'type' : find_validate_xml(meeting, "type"),
+            'type_code' : type_code,
+            'start_time' : start_time,
+            'end_time' : end_time,
+            'days' : find_validate_xml(meeting, "daysOfTheWeek"),
+            'room_number' : find_validate_xml(meeting, "roomNumber"),
+            'building_name' : find_validate_xml(meeting, "buildingName"),
+            'coordinates' : coordinates,
+            'instructor' : instructor,
+            'rate_my_professor': rmp_info
         })
     
     if sections == [] :
@@ -134,18 +165,17 @@ def update_sections (clas):
 
 def get_sections (code, number) :
     print(f"Getting sections for {code} {number}")
-    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'spring'})
-    print(selected_class)
+    selected_class = classes.find_one({'code': code, 'number': number, 'year': 2024, 'semester': 'fall'})
     if selected_class is None :
         print("Class not found")
         return None
-    if 'last_updated' not in selected_class :
+    elif 'last_updated' not in selected_class:
         print("Updating sections")
         try : 
             return update_sections(selected_class)
         except Exception as e :
             print(f"Error updating sections with error {e}")
-    if (datetime.now() - selected_class['last_updated']).total_seconds() > 60 * 10 :
+    elif (datetime.now() - selected_class['last_updated']).total_seconds() > 60 * 10 :
         print("Updating sections")
         try : 
             return update_sections(selected_class)

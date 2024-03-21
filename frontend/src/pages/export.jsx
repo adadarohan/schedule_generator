@@ -31,7 +31,7 @@ function Export(props) {
               <p className="min-w-max">{section.crn}</p>
               <p className="min-w-max">{section.class.code} {section.class.number}</p>
               <p className="min-w-max">{section.section_number}</p>
-              <p className="min-w-max">{section.meetings[0].type}</p>
+              <p className="min-w-max">{section.type}</p>
 
             </div> 
             ))}

@@ -121,6 +121,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
 .venv
 env/
 venv/
@@ -162,8 +163,8 @@ package/
 #.idea/
 
 .vscode/
-.zip
-my_deployment_package.zip
+*.zip
+*pypy*
 
 # Logs
 logs

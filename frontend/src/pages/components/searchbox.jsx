@@ -9,13 +9,14 @@ function ItemChosen( item , props) {
 
 function ComboBoxExample(props) {
 
+
   function getClassFilter(inputValue) {
-    const lowerCasedInputValue = inputValue.toLowerCase()
+    const lowerCasedInputValue = inputValue.toLowerCase().replaceAll(" ", "")
 
     return function booksFilter(class_) {
       return (
         !inputValue ||
-        class_.toLowerCase().includes(lowerCasedInputValue)
+        class_.toLowerCase().replaceAll(" ", "").includes(lowerCasedInputValue)
       )
     }
   }
@@ -37,6 +38,16 @@ function ComboBoxExample(props) {
       },
     })
 
+    function enterHandler(event) {
+      if (event.key === "Enter") {
+        if (items.length) {
+          ItemChosen(items[0], props)
+        }
+      }
+    }
+
+
+
     return (
       <div className="flex flex-col">
         <div className={"flex flex-row rounded-full bg-transparent border-black border-2 p-2 sm:p-3 transition-[border-radius] duration-75 " + (isOpen ? "rounded-br-none" : "")}>
@@ -45,7 +56,9 @@ function ComboBoxExample(props) {
           className="text-2xl sm:text-3xl bg-transparent outline-none placeholder:text-slate-600 w-32 sm:w-36"
           type="text"
           placeholder="search"
+          onKeyUp={enterHandler}
           {...getInputProps()}
+          ref={input => input && props.chosen_classes != 0 && input.focus()}   // ngl I don't know what this does but it makes the autofocus work       
           />
         </div>
 

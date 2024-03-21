@@ -1,15 +1,21 @@
 import {Link, useLoaderData } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import Searchbox from "./components/searchbox";
 import ClassPill from "./components/class_pill";
 
 function Step1(props) {
     let classList = useLoaderData()
 
+   
+
     const [chosen_classes, setChosenClasses] = useState([])
     const [showPlus, setShowPlus] = useState(false)
 
-    const handleHidePlus = () => setShowPlus(false)
+
+    function handleHidePlus() {
+      setShowPlus(false)
+    }
+
 
     useEffect(() => {
       props.setUserPrefs({
@@ -39,7 +45,7 @@ function Step1(props) {
 
             :
 
-            <Searchbox chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} showPlus={showPlus} setShowPlus={setShowPlus} classList={classList}/>
+            <Searchbox chosen_classes={chosen_classes} setChosenClasses={setChosenClasses} setShowPlus={setShowPlus} classList={classList}/>
           }
         </div>
   
