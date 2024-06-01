@@ -17,6 +17,7 @@
     "@sentry/react": "^7.109.0",
     "@sentry/vite-plugin": "^2.16.0",
     "downshift": "^8.2.2",
+    "ical-generator": "^7.0.0",
     "material-symbols": "^0.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

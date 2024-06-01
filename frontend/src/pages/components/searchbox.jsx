@@ -66,7 +66,7 @@ function ComboBoxExample(props) {
           className={"border-black border-2 rounded-b-3xl border-t-0 pr-6 sm:pr-8 pb-2 pl-1 max-w-max self-end " + (!(isOpen && items.length) ? "hidden" : "")}
           {...getMenuProps()}
         >
-          {isOpen &&
+          {
             items.slice(0,5).map((item, index) => (
               <li
                 className="text-2xl sm:text-3xl w-38 py-2 sm:py-3 px-2 max-w-max cursor-pointer hover:scale-105 transition duration-150"
@@ -77,6 +77,8 @@ function ComboBoxExample(props) {
                 <span>{item}</span>
               </li>
             ))}
+
+
         </ul>
       </div>
     );

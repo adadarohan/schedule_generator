@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { createIcalFile } from "./components/export_to_cal";
 
 function Export(props) {
 
   console.log(props.schedules[props.chosenSchedule])
 
+  console.log(createIcalFile(props.schedules[props.chosenSchedule]['schedule']))
 
   return (
     <div className="font-serif max-h-screen flex flex-col">
