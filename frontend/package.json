@@ -16,6 +16,7 @@
     "@reactour/tour": "^3.6.1",
     "@sentry/react": "^7.109.0",
     "@sentry/vite-plugin": "^2.16.0",
+    "ag-grid-react": "^31.3.2",
     "downshift": "^8.2.2",
     "ical-generator": "^7.0.0",
     "material-symbols": "^0.13.0",

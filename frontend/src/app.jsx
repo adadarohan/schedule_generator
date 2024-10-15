@@ -17,28 +17,29 @@ import Submit from "./pages/submit";
 import Results from "./pages/results";
 import Export from "./pages/export";
 import Error from "./pages/error";
+import Classes from "./pages/classes"
 import { TourProvider } from '@reactour/tour'
 import * as Sentry from "@sentry/react";
 
 export default function App () {
 
-  Sentry.init({
-    dsn: "https://7123a506a43f8ec4a0f00dab479823d2@o1375280.ingest.us.sentry.io/4506997988917248",
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        maskAllText: false,
-        blockAllMedia: false,
-      }),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 1.0, //  Capture 100% of the transactions
-    // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-    tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
-    // Session Replay
-    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
-  });
+  // Sentry.init({
+  //   dsn: "https://7123a506a43f8ec4a0f00dab479823d2@o1375280.ingest.us.sentry.io/4506997988917248",
+  //   integrations: [
+  //     Sentry.browserTracingIntegration(),
+  //     Sentry.replayIntegration({
+  //       maskAllText: false,
+  //       blockAllMedia: false,
+  //     }),
+  //   ],
+  //   // Performance Monitoring
+  //   tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  //   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+  //   tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+  //   // Session Replay
+  //   replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+  //   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  // });
 
   // Initialise Google Analytics  
   ReactGA.initialize("G-ZVFH4MVCZ8");
@@ -117,6 +118,11 @@ export default function App () {
           path: "/export",
           element: <Export schedules={schedules} chosenSchedule={chosenSchedule}/>,
           errorElement: <Error/>
+      },
+      {
+          path : "/classes",
+          element: <Classes></Classes>,
+          errorElement : <Error/>
       }
     ]);
 

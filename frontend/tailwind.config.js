@@ -7,8 +7,8 @@ export default {
   theme: {
     fontFamily: {
       serif: ['Playfair Display', 'serif'],
-      display: ['Young Serif' , 'serif']
-
+      display: ['Young Serif' , 'serif'],
+      sans : ['Raleway', 'sans']
     },
     extend: {
     },
