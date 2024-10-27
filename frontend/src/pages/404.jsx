@@ -14,7 +14,7 @@ export default function NotFound() {
 
         <Link to={`/`} className="px-5 sm:pl-10 pt-20 transition hover:-translate-y-2 flex flex-row justify-start duration-300 max-w-max">
           <h5 className="text-4xl">go home</h5>
-          <span className="material-symbols-outlined text-5xl">chevron_right</span>
+          <span className="material-symbols-outlined icon_thin_sm">chevron_right</span>
         </Link>
     </div>
   );
