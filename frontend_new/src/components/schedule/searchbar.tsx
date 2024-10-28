@@ -1,39 +1,47 @@
-import SelectBox from '@/components/schedule/selectbox'
+import  { useState, useEffect } from 'react';
+import SelectBox from '@/components/schedule/selectbox';
 
-export default function MultiSelectForm() {
-  const options = [
-    { value: 'One', label: 'One' },
-    { value: 'Two', label: 'Two' },
-    { value: 'Three', label: 'Three' },
-    { value: 'Four', label: 'Four' },
-    { value: 'Five', label: 'Five' },
-    { value: 'Six', label: 'Six' },
-    { value: 'Seven', label: 'Seven' },
-    { value: 'Eight', label: 'Eight' },
-    { value: 'Nine', label: 'Nine' },
-    { value: 'Ten', label: 'Ten' },
-    { value: 'Eleven', label: 'Eleven' },
-    { value: 'Twelve', label: 'Twelve' },
-    { value: 'Thirteen', label: 'Thirteen' },
-    { value: 'Fifteen', label: 'Fifteen' }
-  ]
+export default function SearchBar({ searchParams, setSearchParams }) {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  function onChange(value) {
-    console.log(value)
+  useEffect(() => {
+    async function fetchClasses() {
+      try {
+        const response = await fetch(import.meta.env.VITE_GET_CLASSES_URL);
+        let data = await response.json();
+        // convert into key value pairs, with key and value same
+        data = data.map((d) => ({ value: d, label: d }));
+        setOptions(data);
+      } catch (error) {
+        console.error('Error fetching classes:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchClasses();
+  }, []);
+
+  function setClassList(values: string[] | string) {
+    console.log(values);
+    setSearchParams({ ...searchParams, classes: values });
   }
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-
     <SelectBox
-        options={options}
-        value={["One"]}
-        onChange={onChange}
-        placeholder="Select a numbers..."
-        inputPlaceholder="Search numbers"
-        emptyPlaceholder="No number found."
-        multiple
+      options={options}
+      value={searchParams.classes}
+      onChange={setClassList}
+      placeholder="Select classes"
+      inputPlaceholder="Search for classes"
+      emptyPlaceholder="No classes found."
+      multiple
+      className='mt-4 py-3'
     />
-               
-  )
+  );
 }

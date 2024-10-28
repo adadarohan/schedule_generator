@@ -94,7 +94,7 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
                     .map((option) => (
                       <span
                         key={option.value}
-                        className="inline-flex items-center gap-1 rounded-md border py-0.5 pl-2 pr-1 text-xs font-medium text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        className="inline-flex items-center gap-1 rounded-md border py-2 pl-2 pr-1 font-medium text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       >
                         <span>{option.label}</span>
                         <span
@@ -163,13 +163,12 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
             <CommandGroup>
               <ScrollArea>
                 <div className="max-h-64">
-                  {options.map((option) => {
+                  {options.slice(0, 10).map((option) => {
                     const isSelected =
                       Array.isArray(value) && value.includes(option.value)
                     return (
                       <CommandItem
                         key={option.value}
-                        // value={option.value}
                         onSelect={() => handleSelect(option.value)}
                       >
                         {multiple && (
