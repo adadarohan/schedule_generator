@@ -8,8 +8,8 @@ export default function Schedule() {
         classes: [], // {'code': class_code, 'number': class_number, 'crn_list': crn_list}
         pref_sections: [], // list of crns
         open_sections_only: true, 
-        start_time: 8, // 24 hour time
-        end_time: 20, // 24 hour time
+        start_time: 0, // 24 hour time
+        end_time: 0, // 24 hour time
         pref_time : 12, // 24 hour time (to center around)
         lunch: { // lunch time, slider maybe?
             start: 11,

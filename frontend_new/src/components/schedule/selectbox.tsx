@@ -50,6 +50,11 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
     const [searchTerm, setSearchTerm] = React.useState<string>('')
     const [isOpen, setIsOpen] = React.useState(false)
 
+    // Filter by search term
+    const filtered = options.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    ).slice(0, 10)
+
     const handleSelect = (selectedValue: string) => {
       if (multiple) {
         const newValue =
@@ -112,7 +117,7 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
                   options.find((opt) => opt.value === value)?.label
                 )
               ) : (
-                <span className="mr-auto text-muted-foreground">
+                <span className="mr-auto">
                   {placeholder}
                 </span>
               )}
@@ -139,7 +144,7 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
           className="w-[var(--radix-popover-trigger-width)] p-0"
           align="start"
         >
-          <Command>
+          <Command shouldFilter={false}>
             <div className="relative">
               <CommandInput
                 value={searchTerm}
@@ -163,7 +168,7 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
             <CommandGroup>
               <ScrollArea>
                 <div className="max-h-64">
-                  {options.slice(0, 10).map((option) => {
+                  {filtered.map((option) => {
                     const isSelected =
                       Array.isArray(value) && value.includes(option.value)
                     return (

@@ -10,7 +10,7 @@ import Schedule from "@/components/schedule/schedule"
 export default function Menu() {
 
     return (
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs defaultValue="schedule" className="w-full">
             <TabsList>
                 <TabsTrigger value="schedule">Schedule Generator</TabsTrigger>
                 <TabsTrigger value="classes">Class Explorer</TabsTrigger>
